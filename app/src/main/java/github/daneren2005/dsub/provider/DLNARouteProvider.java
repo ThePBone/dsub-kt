@@ -400,6 +400,11 @@ public class DLNARouteProvider extends MediaRouteProvider {
 			// Log.d(TAG, msg);
 		}
 
+		@Override
+		public void debug(String msg, long value) {
+
+		}
+
 		public Logger getLogger(String name) {
 			return new JettyAndroidLog(name);
 		}

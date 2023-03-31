@@ -5,13 +5,14 @@ android {
 
 	defaultConfig {
 		applicationId "github.daneren2005.dsub"
-		minSdkVersion 15
+		minSdkVersion 26
+		// TODO minSdk upgraded due to org.eclipse.jetty dependency. Target a lower level later.
 		targetSdkVersion 29
 		versionCode 208
 		versionName '5.5.3'
 		setProperty("archivesBaseName", "DSub $versionName")
-		resConfigs "de", "es", "fr", "hu", "nl", "pt-rPT", "ru", "sv", "zh"
-		vectorDrawables.useSupportLibrary = true
+        resConfigs 'de', 'es', 'fr', 'hu', 'nl', 'pt-rPT', 'ru', 'sv', 'zh'
+        vectorDrawables.useSupportLibrary = true
 		resValue 'string', 'account_type.subsonic', applicationId + ".subsonic"
 		resValue 'string', 'provider.search', applicationId + ".provider.DSubSearchProvider"
 		resValue 'string', 'provider.playlist', applicationId + ".playlists.provider"
@@ -45,20 +46,22 @@ android {
 			dimension "version"
 		}
 	}
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/beans.xml']
+        }
+    }
 
-	packagingOptions {
-		exclude 'META-INF/beans.xml'
-	}
 
-	lintOptions {
-		checkReleaseBuilds false
-	}
-
-	signingConfigs {
+    signingConfigs {
 		debug {
 			storeFile file('../debug.keystore')
 		}
 	}
+    namespace 'github.daneren2005.dsub'
+    lint {
+        checkReleaseBuilds false
+    }
 }
 
 dependencies {
@@ -75,7 +78,7 @@ dependencies {
     implementation 'com.shehabic.droppy:Droppy:0.5.1@aar'
 	implementation group: 'org.fourthline.cling', name: 'cling-core', version:'2.1.1'
 	implementation group: 'org.fourthline.cling', name: 'cling-support', version:'2.1.1'
-	implementation group: 'org.eclipse.jetty', name: 'jetty-server', version:'8.1.16.v20140903'
-	implementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version:'8.1.16.v20140903'
-	implementation group: 'org.eclipse.jetty', name: 'jetty-client', version:'8.1.16.v20140903'
+	implementation group: 'org.eclipse.jetty', name: 'jetty-server', version:'9.4.41.v20210516'
+	implementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version:'9.4.41.v20210516'
+	implementation group: 'org.eclipse.jetty', name: 'jetty-client', version:'9.4.41.v20210516'
 }
