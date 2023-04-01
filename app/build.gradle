@@ -7,7 +7,7 @@ android {
 		applicationId "github.daneren2005.dsub"
 		minSdkVersion 26
 		// TODO minSdk upgraded due to org.eclipse.jetty dependency. Target a lower level later.
-		targetSdkVersion 30
+		targetSdkVersion 31
 		versionCode 208
 		versionName '5.5.3'
 		setProperty("archivesBaseName", "DSub $versionName")

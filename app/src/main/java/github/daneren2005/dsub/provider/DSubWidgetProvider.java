@@ -280,7 +280,7 @@ public class DSubWidgetProvider extends AppWidgetProvider {
 		Intent intent = new Intent(context, SubsonicFragmentActivity.class);
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_DOWNLOAD, true);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         views.setOnClickPendingIntent(R.id.appwidget_coverart, pendingIntent);
         views.setOnClickPendingIntent(R.id.appwidget_top, pendingIntent);
 
@@ -289,27 +289,27 @@ public class DSubWidgetProvider extends AppWidgetProvider {
         intent.setComponent(new ComponentName(context, DownloadService.class));
 		intent.setAction(DownloadService.CMD_TOGGLEPAUSE);
         if (Build.VERSION.SDK_INT >= 26)
-            pendingIntent = PendingIntent.getForegroundService(context, 0, intent, 0);
+            pendingIntent = PendingIntent.getForegroundService(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         else
-            pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+            pendingIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         views.setOnClickPendingIntent(R.id.control_play, pendingIntent);
 
         intent = new Intent("DSub.NEXT");  // Use a unique action name to ensure a different PendingIntent to be created.
         intent.setComponent(new ComponentName(context, DownloadService.class));
 		intent.setAction(DownloadService.CMD_NEXT);
         if (Build.VERSION.SDK_INT >= 26)
-            pendingIntent = PendingIntent.getForegroundService(context, 0, intent, 0);
+            pendingIntent = PendingIntent.getForegroundService(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         else
-            pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+            pendingIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         views.setOnClickPendingIntent(R.id.control_next, pendingIntent);
 
         intent = new Intent("DSub.PREVIOUS");  // Use a unique action name to ensure a different PendingIntent to be created.
         intent.setComponent(new ComponentName(context, DownloadService.class));
 		intent.setAction(DownloadService.CMD_PREVIOUS);
         if (Build.VERSION.SDK_INT >= 26)
-            pendingIntent = PendingIntent.getForegroundService(context, 0, intent, 0);
+            pendingIntent = PendingIntent.getForegroundService(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         else
-            pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+            pendingIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         views.setOnClickPendingIntent(R.id.control_previous, pendingIntent);
     }
 }

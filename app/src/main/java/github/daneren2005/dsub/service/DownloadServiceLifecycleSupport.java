@@ -21,6 +21,7 @@ package github.daneren2005.dsub.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -29,10 +30,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.RemoteControlClient;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyCallback;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -52,6 +56,8 @@ import github.daneren2005.dsub.util.Util;
 
 import static github.daneren2005.dsub.domain.PlayerState.PREPARING;
 
+import androidx.annotation.RequiresApi;
+
 /**
  * @author Sindre Mehus
  */
@@ -65,6 +71,7 @@ public class DownloadServiceLifecycleSupport {
 	private Handler eventHandler;
 	private BroadcastReceiver ejectEventReceiver;
 	private PhoneStateListener phoneStateListener;
+	private CustomTelephonyCallback newPhoneStateListener;
 	private boolean externalStorageAvailable= true;
 	private ReentrantLock lock = new ReentrantLock();
 	private final AtomicBoolean setup = new AtomicBoolean(false);
@@ -155,12 +162,19 @@ public class DownloadServiceLifecycleSupport {
 		// React to media buttons.
 		Util.registerMediaButtonEventReceiver(downloadService);
 
-		// Pause temporarily on incoming phone calls.
-		phoneStateListener = new MyPhoneStateListener();
-
 		// Android 6.0 removes requirement for android.Manifest.permission.READ_PHONE_STATE;
 		TelephonyManager telephonyManager = (TelephonyManager) downloadService.getSystemService(Context.TELEPHONY_SERVICE);
-		telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			newPhoneStateListener = new CustomTelephonyCallback();
+			// TODO use Audio focus APIs
+			//telephonyManager.registerTelephonyCallback(ContextCompat.getMainExecutor(downloadService.getApplicationContext()), newPhoneStateListener);
+
+		}
+		else {
+			// Pause temporarily on incoming phone calls.
+			phoneStateListener = new MyPhoneStateListener();
+			telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+		}
 
 		// Register the handler for outside intents.
 		IntentFilter commandFilter = new IntentFilter();
@@ -261,7 +275,13 @@ public class DownloadServiceLifecycleSupport {
 		downloadService.unregisterReceiver(intentReceiver);
 
 		TelephonyManager telephonyManager = (TelephonyManager) downloadService.getSystemService(Context.TELEPHONY_SERVICE);
-		telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			// TODO remove telephonyManager.unregisterTelephonyCallback(newPhoneStateListener);
+		}
+		else {
+			telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+		}
 	}
 
 	public boolean isExternalStorageAvailable() {
@@ -490,4 +510,39 @@ public class DownloadServiceLifecycleSupport {
 			});
 		}
 	}
+
+	@RequiresApi(Build.VERSION_CODES.S)
+	class CustomTelephonyCallback extends TelephonyCallback implements TelephonyCallback.CallStateListener {
+		private boolean resumeAfterCall;
+
+
+		@Override
+		public void onCallStateChanged(int state) {
+			eventHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					switch (state) {
+						case TelephonyManager.CALL_STATE_RINGING:
+						case TelephonyManager.CALL_STATE_OFFHOOK:
+							if (downloadService.getPlayerState() == PlayerState.STARTED) {
+								resumeAfterCall = true;
+								downloadService.pause(true);
+							}
+							break;
+						case TelephonyManager.CALL_STATE_IDLE:
+							if (resumeAfterCall) {
+								resumeAfterCall = false;
+								if(downloadService.getPlayerState() == PlayerState.PAUSED_TEMP) {
+									downloadService.start();
+								}
+							}
+							break;
+						default:
+							break;
+					}
+				}
+			});
+		}
+	}
+
 }
