@@ -17,8 +17,12 @@ package github.daneren2005.dsub.view;
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
-import android.preference.EditTextPreference;
+
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.preference.EditTextPreference;
+import androidx.preference.PreferenceViewHolder;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,96 +52,94 @@ public class CacheLocationPreference extends EditTextPreference {
 		super(context);
 		this.context = context;
 	}
-
+/* TODO only allow external/internal options, no custom path
 	@Override
-	protected void onBindDialogView(View view) {
-		super.onBindDialogView(view);
+	public void onBindViewHolder(@NonNull PreferenceViewHolder holder) {
+		holder.itemView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-			view.setLayoutParams(new ViewGroup.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
+		final EditText editText = (EditText) holder.findViewById(android.R.id.edit);
+		ViewGroup vg = (ViewGroup) editText.getParent();
 
-			final EditText editText = (EditText) view.findViewById(android.R.id.edit);
-			ViewGroup vg = (ViewGroup) editText.getParent();
+		LinearLayout cacheButtonsWrapper = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.cache_location_buttons, vg, true);
+		Button internalLocation = (Button) cacheButtonsWrapper.findViewById(R.id.location_internal);
+		Button externalLocation = (Button) cacheButtonsWrapper.findViewById(R.id.location_external);
 
-			LinearLayout cacheButtonsWrapper = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.cache_location_buttons, vg, true);
-			Button internalLocation = (Button) cacheButtonsWrapper.findViewById(R.id.location_internal);
-			Button externalLocation = (Button) cacheButtonsWrapper.findViewById(R.id.location_external);
+		File[] dirs;
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+			dirs = context.getExternalMediaDirs();
+		} else {
+			dirs = ContextCompat.getExternalFilesDirs(context, null);
+		}
 
-			File[] dirs;
-			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-				dirs = context.getExternalMediaDirs();
-			} else {
-				dirs = ContextCompat.getExternalFilesDirs(context, null);
-			}
-
-			// Past 5.0 we can query directly for SD Card
-			File internalDir = null, externalDir = null;
-			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				for(int i = 0; i < dirs.length; i++) {
-					try {
-						if (dirs[i] != null) {
-							if(Environment.isExternalStorageRemovable(dirs[i])) {
-								if(externalDir != null) {
-									externalDir = dirs[i];
-								}
-							} else {
-								internalDir = dirs[i];
+		// Past 5.0 we can query directly for SD Card
+		File internalDir = null, externalDir = null;
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			for(int i = 0; i < dirs.length; i++) {
+				try {
+					if (dirs[i] != null) {
+						if(Environment.isExternalStorageRemovable(dirs[i])) {
+							if(externalDir != null) {
+								externalDir = dirs[i];
 							}
-
-							if(internalDir != null && externalDir != null) {
-								break;
-							}
+						} else {
+							internalDir = dirs[i];
 						}
-					} catch (Exception e) {
-						Log.e(TAG, "Failed to check if is external", e);
-					}
-				}
-			}
 
-			// Before 5.0, we have to guess.  Most of the time the SD card is last
-			if(externalDir == null) {
-				for (int i = dirs.length - 1; i >= 0; i--) {
-					if (dirs[i] != null) {
-						externalDir = dirs[i];
-						break;
+						if(internalDir != null && externalDir != null) {
+							break;
+						}
 					}
+				} catch (Exception e) {
+					Log.e(TAG, "Failed to check if is external", e);
 				}
-			}
-			if(internalDir == null) {
-				for (int i = 0; i < dirs.length; i++) {
-					if (dirs[i] != null) {
-						internalDir = dirs[i];
-						break;
-					}
-				}
-			}
-			final File finalInternalDir = new File(internalDir, "music");
-			final File finalExternalDir = new File(externalDir, "music");
-
-			final EditText editTextBox = (EditText)view.findViewById(android.R.id.edit);
-			if(finalInternalDir != null && (finalInternalDir.exists() || finalInternalDir.mkdirs())) {
-				internalLocation.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						String path = finalInternalDir.getPath();
-						editTextBox.setText(path);
-					}
-				});
-			} else {
-				internalLocation.setEnabled(false);
-			}
-
-			if(finalExternalDir != null && !finalInternalDir.equals(finalExternalDir) && (finalExternalDir.exists() || finalExternalDir.mkdirs())) {
-				externalLocation.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						String path = finalExternalDir.getPath();
-						editTextBox.setText(path);
-					}
-				});
-			} else {
-				externalLocation.setEnabled(false);
 			}
 		}
-	}
+
+		// Before 5.0, we have to guess.  Most of the time the SD card is last
+		if(externalDir == null) {
+			for (int i = dirs.length - 1; i >= 0; i--) {
+				if (dirs[i] != null) {
+					externalDir = dirs[i];
+					break;
+				}
+			}
+		}
+		if(internalDir == null) {
+			for (int i = 0; i < dirs.length; i++) {
+				if (dirs[i] != null) {
+					internalDir = dirs[i];
+					break;
+				}
+			}
+		}
+		final File finalInternalDir = new File(internalDir, "music");
+		final File finalExternalDir = new File(externalDir, "music");
+
+		final EditText editTextBox = (EditText)holder.findViewById(android.R.id.edit);
+		if(finalInternalDir != null && (finalInternalDir.exists() || finalInternalDir.mkdirs())) {
+			internalLocation.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					String path = finalInternalDir.getPath();
+					editTextBox.setText(path);
+				}
+			});
+		} else {
+			internalLocation.setEnabled(false);
+		}
+
+		if(finalExternalDir != null && !finalInternalDir.equals(finalExternalDir) && (finalExternalDir.exists() || finalExternalDir.mkdirs())) {
+			externalLocation.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					String path = finalExternalDir.getPath();
+					editTextBox.setText(path);
+				}
+			});
+		} else {
+			externalLocation.setEnabled(false);
+		}
+
+		super.onBindViewHolder(holder);
+	}*/
 }

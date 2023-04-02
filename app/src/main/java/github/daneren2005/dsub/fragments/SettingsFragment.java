@@ -52,7 +52,6 @@ import java.util.Map;
 import github.daneren2005.dsub.R;
 import github.daneren2005.dsub.activity.SubsonicActivity;
 import github.daneren2005.dsub.service.DownloadService;
-import github.daneren2005.dsub.service.HeadphoneListenerService;
 import github.daneren2005.dsub.service.MusicService;
 import github.daneren2005.dsub.service.MusicServiceFactory;
 import github.daneren2005.dsub.util.Constants;
@@ -109,12 +108,10 @@ public class SettingsFragment extends PreferenceCompatFragment implements Shared
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 
-		if(Build.VERSION.SDK_INT >= 21) {
-			CheckBoxPreference mediaButtons = (CheckBoxPreference) findPreference("mediaButtons");
-			if (mediaButtons != null) {
-				PreferenceCategory otherCategory = (PreferenceCategory) findPreference("otherSettings");
-				otherCategory.removePreference(mediaButtons);
-			}
+		CheckBoxPreference mediaButtons = (CheckBoxPreference) findPreference("mediaButtons");
+		if (mediaButtons != null) {
+			PreferenceCategory otherCategory = (PreferenceCategory) findPreference("otherSettings");
+			otherCategory.removePreference(mediaButtons);
 		}
 
 		int instance = this.getArguments().getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, -1);
@@ -193,23 +190,14 @@ public class SettingsFragment extends PreferenceCompatFragment implements Shared
 			if(downloadService != null) {
 				downloadService.reapplyVolume();
 			}
-		} else if(Constants.PREFERENCES_KEY_START_ON_HEADPHONES.equals(key)) {
-			Intent serviceIntent = new Intent();
-			serviceIntent.setClassName(context.getPackageName(), HeadphoneListenerService.class.getName());
-
-			if(sharedPreferences.getBoolean(key, false)) {
-				context.startService(serviceIntent);
-			} else {
-				context.stopService(serviceIntent);
-			}
-		} else if(Constants.PREFERENCES_KEY_THEME.equals(key)) {
+		} /*else if(Constants.PREFERENCES_KEY_THEME.equals(key)) {
 			String value = sharedPreferences.getString(key, null);
 			if("day/night".equals(value) || "day/black".equals(value)) {
 				if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 					ActivityCompat.requestPermissions(context, new String[]{ Manifest.permission.ACCESS_COARSE_LOCATION }, SubsonicActivity.PERMISSIONS_REQUEST_LOCATION);
 				}
 			}
-		} else if(Constants.PREFERENCES_KEY_DLNA_CASTING_ENABLED.equals(key)) {
+		}*/ else if(Constants.PREFERENCES_KEY_DLNA_CASTING_ENABLED.equals(key)) {
 			DownloadService downloadService = DownloadService.getInstance();
 			if(downloadService != null) {
 				MediaRouteManager mediaRouter = downloadService.getMediaRouter();
@@ -236,13 +224,13 @@ public class SettingsFragment extends PreferenceCompatFragment implements Shared
 		}
 		internalSSIDDisplay = context.getResources().getString(R.string.settings_server_local_network_ssid_hint, internalSSID);
 
-		theme = (ListPreference) this.findPreference(Constants.PREFERENCES_KEY_THEME);
+		//theme = (ListPreference) this.findPreference(Constants.PREFERENCES_KEY_THEME);
 		maxBitrateWifi = (ListPreference) this.findPreference(Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI);
 		maxBitrateMobile = (ListPreference) this.findPreference(Constants.PREFERENCES_KEY_MAX_BITRATE_MOBILE);
 		maxVideoBitrateWifi = (ListPreference) this.findPreference(Constants.PREFERENCES_KEY_MAX_VIDEO_BITRATE_WIFI);
 		maxVideoBitrateMobile = (ListPreference) this.findPreference(Constants.PREFERENCES_KEY_MAX_VIDEO_BITRATE_MOBILE);
 		networkTimeout = (ListPreference) this.findPreference(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT);
-		cacheLocation = (CacheLocationPreference) this.findPreference(Constants.PREFERENCES_KEY_CACHE_LOCATION);
+		//cacheLocation = (CacheLocationPreference) this.findPreference(Constants.PREFERENCES_KEY_CACHE_LOCATION);
 		preloadCountWifi = (ListPreference) this.findPreference(Constants.PREFERENCES_KEY_PRELOAD_COUNT_WIFI);
 		preloadCountMobile = (ListPreference) this.findPreference(Constants.PREFERENCES_KEY_PRELOAD_COUNT_MOBILE);
 		keepPlayedCount = (ListPreference) this.findPreference(Constants.PREFERENCES_KEY_KEEP_PLAYED_CNT);
@@ -643,12 +631,9 @@ public class SettingsFragment extends PreferenceCompatFragment implements Shared
 		serverTestConnectionPreference.setKey(Constants.PREFERENCES_KEY_TEST_CONNECTION + instance);
 		serverTestConnectionPreference.setPersistent(false);
 		serverTestConnectionPreference.setTitle(R.string.settings_test_connection_title);
-		serverTestConnectionPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				testConnection(instance);
-				return false;
-			}
+		serverTestConnectionPreference.setOnPreferenceClickListener(preference -> {
+			testConnection(instance);
+			return false;
 		});
 
 		screen.addPreference(serverNamePreference);

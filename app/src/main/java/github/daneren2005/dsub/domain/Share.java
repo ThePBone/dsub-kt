@@ -150,8 +150,8 @@ public class Share implements Serializable {
 	public MusicDirectory getMusicDirectory() {
 		MusicDirectory dir = new MusicDirectory();
 		dir.addChildren(entries);
-		dir.setId(getId());
-		dir.setName(getName());
+		dir.id = getId();
+		dir.name = getName();
 		return dir;
 	}
 

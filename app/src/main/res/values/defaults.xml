@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Appearance -->
+    <string name="default_theme" translatable="false">0</string>
+    <bool name="default_fullscreen" translatable="false">false</bool>
+    <bool name="default_color_actionbar" translatable="false">true</bool>
+    <bool name="default_display_track" translatable="false">true</bool>
+    <bool name="default_display_file_suffix" translatable="false">true</bool>
+    <bool name="default_hide_widget" translatable="false">false</bool>
+    <bool name="default_custom_sort_enabled" translation="false">true</bool>
+    <bool name="default_rename_duplicates" translatable="false">true</bool>
+    <bool name="default_disable_exit_prompt" translatable="false">false</bool>
+    <bool name="default_override_system_language" translatable="false">false</bool>
+    <bool name="default_large_album_art" translatable="false">true</bool>
+    <bool name="default_show_play_now" translatable="false">true</bool>
+    <bool name="default_show_play_shuffled" translatable="false">true</bool>
+    <bool name="default_show_play_last" translatable="false">true</bool>
+    <bool name="default_show_download" translatable="false">false</bool>
+    <bool name="default_show_play_next" translatable="false">false</bool>
+    <bool name="default_show_pin" translatable="false">false</bool>
+    <bool name="default_show_delete" translatable="false">false</bool>
+    <bool name="default_show_star" translatable="false">true</bool>
+    <bool name="default_show_shared" translatable="false">true</bool>
+    <bool name="default_show_rating" translatable="false">true</bool>
+</resources>

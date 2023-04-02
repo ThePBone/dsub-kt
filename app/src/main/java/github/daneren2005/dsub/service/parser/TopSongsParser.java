@@ -41,7 +41,7 @@ public class TopSongsParser extends MusicDirectoryEntryParser {
 				String name = getElementName();
 				if ("song".equals(name)) {
 					MusicDirectory.Entry entry = parseEntry("");
-					entry.setCustomOrder(customOrder);
+					entry.customOrder = customOrder;
 					dir.addChild(entry);
 
 					customOrder++;

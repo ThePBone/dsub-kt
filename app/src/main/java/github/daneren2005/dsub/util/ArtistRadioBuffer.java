@@ -52,7 +52,8 @@ public class ArtistRadioBuffer {
 		};
 		
 		// Calculate out the capacity and refill threshold based on the user's random size preference
-		int shuffleListSize = Math.max(1, Integer.parseInt(Util.getPreferences(context).getString(Constants.PREFERENCES_KEY_RANDOM_SIZE, "20")));
+
+		int shuffleListSize = (int) Math.max(1, Util.getPreferences(context).getFloat(Constants.PREFERENCES_KEY_RANDOM_SIZE, 20.0f));
 		// ex: default 20 -> 50
 		capacity = shuffleListSize * 5 / 2;
 		capacity = Math.min(500, capacity);

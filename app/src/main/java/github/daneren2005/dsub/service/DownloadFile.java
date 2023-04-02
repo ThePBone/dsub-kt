@@ -96,20 +96,20 @@ public class DownloadFile implements BufferFile {
         if (bitRate > 0) {
             return bitRate;
         }
-        return song.getBitRate() == null ? 160 : song.getBitRate();
+        return song.bitRate == null ? 160 : song.bitRate;
     }
 	private int getActualBitrate() {
 		int br = song.isVideo() ? Util.getMaxVideoBitrate(context) : Util.getMaxBitrate(context);
-		if(br == 0 && song.getTranscodedSuffix() != null && "mp3".equals(song.getTranscodedSuffix().toLowerCase())) {
-			if(song.getBitRate() != null) {
-				br = Math.min(320, song.getBitRate());
+		if(br == 0 && song.transcodedSuffix != null && "mp3".equals(song.transcodedSuffix.toLowerCase())) {
+			if(song.bitRate != null) {
+				br = Math.min(320, song.bitRate);
 			} else {
 				br = 320;
 			}
-		} else if(song.getSuffix() != null && (song.getTranscodedSuffix() == null || song.getSuffix().equals(song.getTranscodedSuffix()))) {
+		} else if(song.suffix != null && (song.transcodedSuffix == null || song.suffix.equals(song.transcodedSuffix))) {
 			// If just downsampling, don't try to upsample (ie: 128 kpbs -> 192 kpbs)
-			if(song.getBitRate() != null && (br == 0 || br > song.getBitRate())) {
-				br = song.getBitRate();
+			if(song.bitRate != null && (br == 0 || br > song.bitRate)) {
+				br = song.bitRate;
 			}
 		}
 
@@ -142,11 +142,11 @@ public class DownloadFile implements BufferFile {
 		File file = getCompleteFile();
 		if(file.exists()) {
 			return file.length();
-		} else if(song.getDuration() == null) {
+		} else if(song.duration == null) {
 			return 0;
 		} else {
 			int br = (getBitRate() * 1000) / 8;
-			int duration = song.getDuration();
+			int duration = song.duration;
 			return br * duration;
 		}
 	}
@@ -458,7 +458,7 @@ public class DownloadFile implements BufferFile {
 				// Some devices seem to throw error on partial file which doesn't exist
 				boolean compare;
 				try {
-					compare = (bitRate == 0) || (song.getDuration() == 0) || (partialFile.length() == 0) || (bitRate * song.getDuration() * 1000 / 8) > partialFile.length();
+					compare = (bitRate == 0) || (song.duration == 0) || (partialFile.length() == 0) || (bitRate * song.duration * 1000 / 8) > partialFile.length();
 				} catch(Exception e) {
 					compare = true;
 				}
@@ -569,7 +569,7 @@ public class DownloadFile implements BufferFile {
 
         private void downloadAndSaveCoverArt(MusicService musicService) throws Exception {
             try {
-                if (song.getCoverArt() != null) {
+                if (song.coverArt != null) {
 					// Check if album art already exists, don't want to needlessly load into memory
 					File albumArtFile = FileUtil.getAlbumArtFile(context, song);
 					if(!albumArtFile.exists()) {

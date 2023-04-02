@@ -56,7 +56,7 @@ public class ArtistEntryView extends UpdateView<MusicDirectory.Entry> {
     }
     
     protected void setObjectImpl(MusicDirectory.Entry artist) {
-    	titleView.setText(artist.getTitle());
+    	titleView.setText(artist.title);
 		file = FileUtil.getArtistDirectory(context, artist);
     }
     

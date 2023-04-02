@@ -44,8 +44,8 @@ public class InternetRadioStationParser extends ErrorParser {
 				if ("internetRadioStation".equals(name)) {
 					InternetRadioStation station = new InternetRadioStation();
 
-					station.setId(get("id"));
-					station.setTitle(get("name"));
+					station.id = get("id");
+					station.title = get("name");
 					station.setStreamUrl(get("streamUrl"));
 					station.setHomePageUrl(get("homePageUrl"));
 

@@ -89,9 +89,9 @@ public final class Notifications {
 				mediaStyle.setShowActionsInCompactView(0, 2, 4);
 			}
 
-			String title = song.getTitle();
-			String artist = song.getArtist();
-			String album = song.getAlbum();
+			String title = song.title;
+			String artist = song.artist;
+			String album = song.album;
 
 			NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "now-playing-channel")
 				.setSmallIcon(R.drawable.stat_notify_playing)
@@ -142,7 +142,7 @@ public final class Notifications {
 			// Set the icon, scrolling text and timestamp
 			notification = new NotificationCompat.Builder(context, "now-playing-channel")
 					.setSmallIcon(R.drawable.stat_notify_playing)
-					.setTicker(song.getTitle())
+					.setTicker(song.title)
 					.setWhen(System.currentTimeMillis())
 					.build();
 
@@ -264,9 +264,9 @@ public final class Notifications {
 
 	private static void setupViews(RemoteViews rv, Context context, MusicDirectory.Entry song, boolean expanded, boolean playing, boolean remote, boolean isSingleFile, boolean shouldFastForward) {
 		// Use the same text for the ticker and the expanded notification
-		String title = song.getTitle();
-		String artist = song.getArtist();
-		String album = song.getAlbum();
+		String title = song.title;
+		String artist = song.artist;
+		String album = song.album;
 
 		// Set the album art.
 		try {
@@ -464,7 +464,7 @@ public final class Notifications {
 
 		String currentDownloading, currentSize;
 		if(file != null) {
-			currentDownloading = file.getSong().getTitle();
+			currentDownloading = file.getSong().title;
 			currentSize = Util.formatLocalizedBytes(file.getEstimatedSize(), context);
 		} else {
 			currentDownloading = "none";

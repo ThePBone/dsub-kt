@@ -41,7 +41,6 @@ import android.widget.TextView;
 
 import github.daneren2005.dsub.R;
 import github.daneren2005.dsub.domain.ArtistInfo;
-import github.daneren2005.dsub.domain.InternetRadioStation;
 import github.daneren2005.dsub.domain.MusicDirectory;
 import github.daneren2005.dsub.domain.Playlist;
 import github.daneren2005.dsub.domain.PodcastChannel;
@@ -143,18 +142,18 @@ public class ImageLoader {
 
 			return getUnknownImage(key, size, color, null, null);
 		} else {
-			key = getKey(entry.getId() + "unknown", size);
+			key = getKey(entry.id + "unknown", size);
 			String hash;
-			if(entry.getAlbum() != null) {
-				hash = entry.getAlbum();
-			} else if(entry.getArtist() != null) {
-				hash = entry.getArtist();
+			if(entry.album != null) {
+				hash = entry.album;
+			} else if(entry.artist != null) {
+				hash = entry.artist;
 			} else {
-				hash = entry.getId();
+				hash = entry.id;
 			}
 			color = COLORS[Math.abs(hash.hashCode()) % COLORS.length];
 
-			return getUnknownImage(key, size, color, entry.getAlbum(), entry.getArtist());
+			return getUnknownImage(key, size, color, entry.album, entry.artist);
 		}
 	}
 	private Bitmap getUnknownImage(String key, int size, int color, String topText, String bottomText) {
@@ -197,14 +196,14 @@ public class ImageLoader {
 
 	public Bitmap getCachedImage(Context context, MusicDirectory.Entry entry, boolean large) {
 		int size = large ? imageSizeLarge : imageSizeDefault;
-		if(entry == null || entry.getCoverArt() == null) {
+		if(entry == null || entry.coverArt == null) {
 			return getUnknownImage(entry, size);
 		}
 
-		Bitmap bitmap = cache.get(getKey(entry.getCoverArt(), size));
+		Bitmap bitmap = cache.get(getKey(entry.coverArt, size));
 		if(bitmap == null || bitmap.isRecycled()) {
 			bitmap = FileUtil.getAlbumArtBitmap(context, entry, size);
-			String key = getKey(entry.getCoverArt(), size);
+			String key = getKey(entry.coverArt, size);
 			if(key != null && bitmap != null) {
 				cache.put(key, bitmap);
 				cache.get(key);
@@ -222,30 +221,27 @@ public class ImageLoader {
 		return loadImage(view, entry, large, size, crossfade);
 	}
 	public SilentBackgroundTask loadImage(View view, MusicDirectory.Entry entry, boolean large, int size, boolean crossfade) {
-		if(entry != null && entry instanceof InternetRadioStation) {
-			// Continue on and load a null bitmap
-		}
 		// If we know this a artist, try to load artist info instead
-		else if(entry != null && !entry.isAlbum() && ServerInfo.checkServerVersion(context, "1.11")  && !Util.isOffline(context)) {
+		if(entry != null && !entry.isAlbum() && ServerInfo.checkServerVersion(context, "1.11")  && !Util.isOffline(context)) {
 			SilentBackgroundTask task = new ArtistImageTask(view.getContext(), entry, size, imageSizeLarge, large, view, crossfade);
 			task.execute();
 			return task;
-		} else if(entry != null && entry.getCoverArt() == null && entry.isDirectory() && !Util.isOffline(context)) {
+		} else if(entry != null && entry.coverArt == null && entry.isDirectory() && !Util.isOffline(context)) {
 			// Try to lookup child cover art
 			MusicDirectory.Entry firstChild = FileUtil.lookupChild(context, entry, true);
 			if(firstChild != null) {
-				entry.setCoverArt(firstChild.getCoverArt());
+				entry.coverArt = firstChild.coverArt;
 			}
 		}
 
 		Bitmap bitmap;
-		if (entry == null || entry.getCoverArt() == null) {
+		if (entry == null || entry.coverArt == null) {
 			bitmap = getUnknownImage(entry, size);
 			setImage(view, Util.createDrawableFromBitmap(context, bitmap), crossfade);
 			return null;
 		}
 
-		bitmap = cache.get(getKey(entry.getCoverArt(), size));
+		bitmap = cache.get(getKey(entry.coverArt, size));
 		if (bitmap != null && !bitmap.isRecycled()) {
 			final Drawable drawable = Util.createDrawableFromBitmap(this.context, bitmap);
 			setImage(view, drawable, crossfade);
@@ -289,13 +285,13 @@ public class ImageLoader {
 
 	public SilentBackgroundTask<Void> loadImage(Context context, RemoteControlClientBase remoteControl, MusicDirectory.Entry entry) {
 		Bitmap bitmap;
-		if (entry == null || entry.getCoverArt() == null) {
+		if (entry == null || entry.coverArt == null) {
 			bitmap = getUnknownImage(entry, imageSizeLarge);
 			setImage(entry, remoteControl, Util.createDrawableFromBitmap(context, bitmap));
 			return null;
 		}
 
-		bitmap = cache.get(getKey(entry.getCoverArt(), imageSizeLarge));
+		bitmap = cache.get(getKey(entry.coverArt, imageSizeLarge));
 		if (bitmap != null && !bitmap.isRecycled()) {
 			Drawable drawable = Util.createDrawableFromBitmap(this.context, bitmap);
 			setImage(entry, remoteControl, drawable);
@@ -332,26 +328,26 @@ public class ImageLoader {
 		String id;
 		if(Util.isOffline(context)) {
 			id = PLAYLIST_PREFIX + playlist.getName();
-			entry.setTitle(playlist.getComment());
+			entry.title = playlist.getComment();
 		} else {
 			id = PLAYLIST_PREFIX + playlist.getId();
-			entry.setTitle(playlist.getName());
+			entry.title = playlist.getName();
 		}
-		entry.setId(id);
-		entry.setCoverArt(id);
+		entry.id = id;
+		entry.coverArt = id;
 		// So this isn't treated as a artist
-		entry.setParent("");
+		entry.parent = "";
 
 		return loadImage(view, entry, large, crossfade);
 	}
 
 	public SilentBackgroundTask loadImage(View view, PodcastChannel channel, boolean large, boolean crossfade) {
 		MusicDirectory.Entry entry = new MusicDirectory.Entry();
-		entry.setId(PODCAST_PREFIX + channel.getId());
-		entry.setTitle(channel.getName());
-		entry.setCoverArt(channel.getCoverArt());
+		entry.id = PODCAST_PREFIX + channel.getId();
+		entry.title = channel.getName();
+		entry.coverArt = channel.getCoverArt();
 		// So this isn't treated as a artist
-		entry.setParent("");
+		entry.parent = "";
 
 		return loadImage(view, entry, large, crossfade);
 	}
@@ -450,7 +446,7 @@ public class ImageLoader {
 				MusicService musicService = MusicServiceFactory.getMusicService(mContext);
 				Bitmap bitmap = musicService.getCoverArt(mContext, mEntry, mSize, null, this);
 				if(bitmap != null) {
-					String key = getKey(mEntry.getCoverArt(), mSize);
+					String key = getKey(mEntry.coverArt, mSize);
 					cache.put(key, bitmap);
 					// Make sure key is the most recently "used"
 					cache.get(key);
@@ -530,7 +526,7 @@ public class ImageLoader {
 		protected Void doInBackground() throws Throwable {
 			try {
 				MusicService musicService = MusicServiceFactory.getMusicService(mContext);
-				ArtistInfo artistInfo = musicService.getArtistInfo(mEntry.getId(), false, true, mContext, null);
+				ArtistInfo artistInfo = musicService.getArtistInfo(mEntry.id, false, true, mContext, null);
 				String url = artistInfo.getImageUrl();
 
 				// Figure out whether we are going to get a artist image or the standard image
@@ -547,15 +543,15 @@ public class ImageLoader {
 						}
 					};
 				} else {
-					if (mEntry != null && mEntry.getCoverArt() == null && mEntry.isDirectory() && !Util.isOffline(context)) {
+					if (mEntry != null && mEntry.coverArt == null && mEntry.isDirectory() && !Util.isOffline(context)) {
 						// Try to lookup child cover art
 						MusicDirectory.Entry firstChild = FileUtil.lookupChild(context, mEntry, true);
 						if (firstChild != null) {
-							mEntry.setCoverArt(firstChild.getCoverArt());
+							mEntry.coverArt = firstChild.coverArt;
 						}
 					}
 
-					if (mEntry != null && mEntry.getCoverArt() != null) {
+					if (mEntry != null && mEntry.coverArt != null) {
 						subTask = new ViewImageTask(mContext, mEntry, mSize, mSaveSize, mIsNowPlaying, mView, mCrossfade);
 					} else {
 						// If entry is null as well, we need to just set as a blank image

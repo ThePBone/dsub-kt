@@ -166,7 +166,7 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 		Display d = w.getDefaultDisplay();
 		swipeDistance = (d.getWidth() + d.getHeight()) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100;
 		swipeVelocity = (d.getWidth() + d.getHeight()) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100;
-		gestureScanner = new GestureDetector(this);
+		gestureDetector = new GestureDetector(this);
 
 		playlistFlipper = (ViewFlipper)rootView.findViewById(R.id.download_playlist_flipper);
 		emptyTextView = (TextView)rootView.findViewById(R.id.download_empty);
@@ -213,7 +213,7 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 		View.OnTouchListener touchListener = new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent me) {
-				return gestureScanner.onTouchEvent(me);
+				return gestureDetector.onTouchEvent(me);
 			}
 		};
 		pauseButton.setOnTouchListener(touchListener);
@@ -230,7 +230,7 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 				if (me.getAction() == MotionEvent.ACTION_DOWN) {
 					lastY = (int) me.getRawY();
 				}
-				return gestureScanner.onTouchEvent(me);
+				return gestureDetector.onTouchEvent(me);
 			}
 		});
 
@@ -477,9 +477,8 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 			menu.findItem(R.id.menu_remove_played).setChecked(true);
 		}
 
-		boolean equalizerAvailable = downloadService != null && downloadService.getEqualizerAvailable();
 		boolean isRemoteEnabled = downloadService != null && downloadService.isRemoteEnabled();
-		if(equalizerAvailable && !isRemoteEnabled) {
+		if(!isRemoteEnabled) {
 			SharedPreferences prefs = Util.getPreferences(context);
 			boolean equalizerOn = prefs.getBoolean(Constants.PREFERENCES_EQUALIZER_ON, false);
 			if (equalizerOn && downloadService != null) {
@@ -538,7 +537,7 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 			menu.findItem(R.id.song_menu_star).setTitle(downloadFile.getSong().isStarred() ? R.string.common_unstar : R.string.common_star);
 		}
 
-		if (downloadFile.getSong().getParent() == null) {
+		if (downloadFile.getSong().parent == null) {
 			menu.findItem(R.id.menu_show_album).setVisible(false);
 			menu.findItem(R.id.menu_show_artist).setVisible(false);
 		}
@@ -567,21 +566,21 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 				String albumName;
 				if(menuItemId == R.id.menu_show_album) {
 					if(Util.isTagBrowsing(context)) {
-						albumId = entry.getAlbumId();
+						albumId = entry.albumId;
 					} else {
-						albumId = entry.getParent();
+						albumId = entry.parent;
 					}
-					albumName = entry.getAlbum();
+					albumName = entry.album;
 				} else {
 					if(Util.isTagBrowsing(context)) {
-						albumId = entry.getArtistId();
+						albumId = entry.artistId;
 					} else {
-						albumId = entry.getGrandParent();
+						albumId = entry.grandParent;
 						if(albumId == null) {
-							intent.putExtra(Constants.INTENT_EXTRA_NAME_CHILD_ID, entry.getParent());
+							intent.putExtra(Constants.INTENT_EXTRA_NAME_CHILD_ID, entry.parent);
 						}
 					}
-					albumName = entry.getArtist();
+					albumName = entry.artist;
 					intent.putExtra(Constants.INTENT_EXTRA_NAME_ARTIST, true);
 				}
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, albumId);
@@ -591,9 +590,9 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 				if(Util.isOffline(context)) {
 					try {
 						// This should only be successful if this is a online song in offline mode
-						Integer.parseInt(entry.getParent());
+						Integer.parseInt(entry.parent);
 						String root = FileUtil.getMusicDirectory(context).getPath();
-						String id = root + "/" + entry.getPath();
+						String id = root + "/" + entry.path;
 						id = id.substring(0, id.lastIndexOf("/"));
 						if(menuItemId == R.id.menu_show_album) {
 							intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, id);
@@ -601,7 +600,7 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 						id = id.substring(0, id.lastIndexOf("/"));
 						if(menuItemId != R.id.menu_show_album) {
 							intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, id);
-							intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, entry.getArtist());
+							intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, entry.artist);
 							intent.removeExtra(Constants.INTENT_EXTRA_NAME_CHILD_ID);
 						}
 					} catch(Exception e) {
@@ -615,8 +614,8 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 			case R.id.menu_lyrics: {
 				SubsonicFragment fragment = new LyricsFragment();
 				Bundle args = new Bundle();
-				args.putString(Constants.INTENT_EXTRA_NAME_ARTIST, song.getSong().getArtist());
-				args.putString(Constants.INTENT_EXTRA_NAME_TITLE, song.getSong().getTitle());
+				args.putString(Constants.INTENT_EXTRA_NAME_ARTIST, song.getSong().artist);
+				args.putString(Constants.INTENT_EXTRA_NAME_TITLE, song.getSong().title);
 				fragment.setArguments(args);
 
 				replaceFragment(fragment);
@@ -1075,8 +1074,8 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 
 		final Entry currentSong = currentDownload.getSong();
 		final int position = downloadService.getPlayerPosition();
-		final Bookmark oldBookmark = currentSong.getBookmark();
-		currentSong.setBookmark(new Bookmark(position));
+		final Bookmark oldBookmark = currentSong.bookmark;
+		currentSong.bookmark = new Bookmark(position);
 		bookmarkButton.setImageDrawable(DrawableTint.getTintedDrawable(context, R.drawable.ic_menu_bookmark_selected));
 
 		new SilentBackgroundTask<Void>(context) {
@@ -1088,7 +1087,7 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 				new UpdateHelper.EntryInstanceUpdater(currentSong) {
 					@Override
 					public void update(Entry found) {
-						found.setBookmark(new Bookmark(position));
+						found.bookmark = new Bookmark(position);
 					}
 				}.execute();
 
@@ -1104,7 +1103,7 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 			@Override
 			protected void error(Throwable error) {
 				Log.w(TAG, "Failed to create bookmark", error);
-				currentSong.setBookmark(oldBookmark);
+				currentSong.bookmark = oldBookmark;
 
 				// If no bookmark at start, then return to no bookmark
 				if(oldBookmark == null) {
@@ -1257,7 +1256,7 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 	private void setupSubtitle(int currentPlayingIndex) {
 		if (currentPlaying != null) {
 			Entry song = currentPlaying.getSong();
-			songTitleTextView.setText(song.getTitle());
+			songTitleTextView.setText(song.title);
 			getImageLoader().loadImage(albumArtImageView, song, true, true);
 
 			DownloadService downloadService = getDownloadService();
@@ -1377,12 +1376,12 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 			default:
 				if(currentPlaying != null) {
 					Entry entry = currentPlaying.getSong();
-					if(entry.getAlbum() != null) {
+					if(entry.album != null) {
 						String artist = "";
-						if (entry.getArtist() != null) {
-							artist = currentPlaying.getSong().getArtist() + " - ";
+						if (entry.artist != null) {
+							artist = currentPlaying.getSong().artist + " - ";
 						}
-						statusTextView.setText(artist + entry.getAlbum());
+						statusTextView.setText(artist + entry.album);
 					} else {
 						statusTextView.setText(null);
 					}
@@ -1447,7 +1446,7 @@ public class NowPlayingFragment extends SubsonicFragment implements OnGestureLis
 			rateGoodButton.setImageResource(goodRating);
 		}
 
-		if(song != null && song.getBookmark() != null) {
+		if(song != null && song.bookmark != null) {
 			bookmarkButton.setImageDrawable(DrawableTint.getTintedDrawable(context, R.drawable.ic_menu_bookmark_selected));
 		} else {
 			if(context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {

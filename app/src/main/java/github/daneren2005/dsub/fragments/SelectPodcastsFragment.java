@@ -179,13 +179,13 @@ public class SelectPodcastsFragment extends SelectRecyclerFragment<Serializable>
 
 				for(MusicDirectory.Entry entry: newestEpisodes.getChildren()) {
 					for(PodcastChannel channel: channels) {
-						if(channel.getId().equals(entry.getParent())) {
+						if(channel.getId().equals(entry.parent)) {
 							PodcastEpisode episode = (PodcastEpisode) entry;
 
 							// Update with information normally done in PodcastEntryParser
-							episode.setArtist(channel.getName());
-							episode.setCoverArt(channel.getCoverArt());
-							episode.setPath(FileUtil.getPodcastPath(context, episode));
+							episode.artist = channel.getName();
+							episode.coverArt = channel.getCoverArt();
+							episode.path = FileUtil.getPodcastPath(context, episode);
 							break;
 						}
 					}
@@ -428,9 +428,9 @@ public class SelectPodcastsFragment extends SelectRecyclerFragment<Serializable>
 			protected void done(MusicDirectory result) {
 				List<String> existingEpisodes = new ArrayList<String>();
 				for(MusicDirectory.Entry entry: result.getChildren()) {
-					String id = entry.getId();
+					String id = entry.id;
 					if(id != null) {
-						existingEpisodes.add(entry.getId());
+						existingEpisodes.add(entry.id);
 					}
 				}
 

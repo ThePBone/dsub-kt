@@ -38,7 +38,7 @@ public class AlphabeticalAlbumAdapter extends EntryInfiniteGridAdapter implement
 				return "*";
 			}
 		} else {
-			return getNameIndex(getItemForPosition(position).getAlbum());
+			return getNameIndex(getItemForPosition(position).album);
 		}
 	}
 }

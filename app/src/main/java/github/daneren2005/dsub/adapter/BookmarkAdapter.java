@@ -48,7 +48,7 @@ public class BookmarkAdapter extends SectionAdapter<MusicDirectory.Entry> {
 	@Override
 	public void onBindViewHolder(UpdateView.UpdateViewHolder holder, MusicDirectory.Entry item, int viewType) {
 		SongView songView = (SongView) holder.getUpdateView();
-		Bookmark bookmark = item.getBookmark();
+		Bookmark bookmark = item.bookmark;
 
 		songView.setObject(item, true);
 

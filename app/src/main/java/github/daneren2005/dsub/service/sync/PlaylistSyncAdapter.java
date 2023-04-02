@@ -97,10 +97,10 @@ public class PlaylistSyncAdapter extends SubsonicSyncAdapter {
 					while(!file.isSaved() && !file.isFailedMax()) {
 						throwIfNetworkInvalid();
 						file.downloadNow(musicService);
-						if(file.isSaved() && !updated.contains(playlist.getName())) {
-							updated.add(playlist.getName());
+						if(file.isSaved() && !updated.contains(playlist.name)) {
+							updated.add(playlist.name);
 							if(updatedId == null) {
-								updatedId = playlist.getId();
+								updatedId = playlist.id;
 							}
 						}
 					}

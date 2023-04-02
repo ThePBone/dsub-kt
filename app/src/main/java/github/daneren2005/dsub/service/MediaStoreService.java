@@ -52,23 +52,23 @@ public class MediaStoreService {
 		ContentResolver contentResolver = context.getContentResolver();
 		ContentValues values = new ContentValues();
 		if(!song.isVideo()) {
-			values.put(MediaStore.MediaColumns.TITLE, song.getTitle());
+			values.put(MediaStore.MediaColumns.TITLE, song.title);
 			values.put(MediaStore.MediaColumns.DATA, songFile.getAbsolutePath());
-			values.put(MediaStore.Audio.AudioColumns.ARTIST, song.getArtist());
-			values.put(MediaStore.Audio.AudioColumns.ALBUM, song.getAlbum());
-			if (song.getDuration() != null) {
-				values.put(MediaStore.Audio.AudioColumns.DURATION, song.getDuration() * 1000L);
+			values.put(MediaStore.Audio.AudioColumns.ARTIST, song.artist);
+			values.put(MediaStore.Audio.AudioColumns.ALBUM, song.album);
+			if (song.duration != null) {
+				values.put(MediaStore.Audio.AudioColumns.DURATION, song.duration * 1000L);
 			}
-			if (song.getTrack() != null) {
-				values.put(MediaStore.Audio.AudioColumns.TRACK, song.getTrack());
+			if (song.track != null) {
+				values.put(MediaStore.Audio.AudioColumns.TRACK, song.track);
 			}
-			if (song.getYear() != null) {
-				values.put(MediaStore.Audio.AudioColumns.YEAR, song.getYear());
+			if (song.year != null) {
+				values.put(MediaStore.Audio.AudioColumns.YEAR, song.year);
 			}
-			if(song.getTranscodedContentType() != null) {
-				values.put(MediaStore.MediaColumns.MIME_TYPE, song.getTranscodedContentType());
+			if(song.transcodedContentType != null) {
+				values.put(MediaStore.MediaColumns.MIME_TYPE, song.transcodedContentType);
 			} else {
-				values.put(MediaStore.MediaColumns.MIME_TYPE, song.getContentType());
+				values.put(MediaStore.MediaColumns.MIME_TYPE, song.contentType);
 			}
 			values.put(MediaStore.Audio.AudioColumns.IS_MUSIC, 1);
 
@@ -87,23 +87,23 @@ public class MediaStoreService {
 
 			cursor.close();
 		} else {
-			values.put(MediaStore.Video.VideoColumns.TITLE, song.getTitle());
-			values.put(MediaStore.Video.VideoColumns.DISPLAY_NAME, song.getTitle());
-			values.put(MediaStore.Video.VideoColumns.ARTIST, song.getArtist());
+			values.put(MediaStore.Video.VideoColumns.TITLE, song.title);
+			values.put(MediaStore.Video.VideoColumns.DISPLAY_NAME, song.title);
+			values.put(MediaStore.Video.VideoColumns.ARTIST, song.artist);
 			values.put(MediaStore.Video.VideoColumns.DATA, songFile.getAbsolutePath());
-			if (song.getDuration() != null) {
-				values.put(MediaStore.Video.VideoColumns.DURATION, song.getDuration() * 1000L);
+			if (song.duration != null) {
+				values.put(MediaStore.Video.VideoColumns.DURATION, song.duration * 1000L);
 			}
 
 			String videoPlayerType = Util.getVideoPlayerType(context);
 			if("hls".equals(videoPlayerType)) {
 				// HLS should be able to transcode to mp4 automatically
 				values.put(MediaStore.MediaColumns.MIME_TYPE, "video/mpeg");
-			} else if("raw".equals(videoPlayerType) || song.getTranscodedContentType() == null) {
+			} else if("raw".equals(videoPlayerType) || song.transcodedContentType == null) {
 				// Download the original video without any transcoding
-				values.put(MediaStore.MediaColumns.MIME_TYPE, song.getContentType());
+				values.put(MediaStore.MediaColumns.MIME_TYPE, song.contentType);
 			} else {
-				values.put(MediaStore.MediaColumns.MIME_TYPE, song.getTranscodedContentType());
+				values.put(MediaStore.MediaColumns.MIME_TYPE, song.transcodedContentType);
 			}
 
 			Uri uri = contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);

@@ -472,13 +472,13 @@ public class DLNAController extends RemoteController {
 		// Create metadata for entry
 		Item track;
 		if(song.isVideo()) {
-			track = new VideoItem(song.getId(), song.getParent(), song.getTitle(), song.getArtist());
+			track = new VideoItem(song.id, song.parent, song.title, song.artist);
 		} else {
 			String contentType = null;
-			if(song.getTranscodedContentType() != null) {
-				contentType = song.getTranscodedContentType();
-			} else if(song.getContentType() != null) {
-				contentType = song.getContentType();
+			if(song.transcodedContentType != null) {
+				contentType = song.transcodedContentType;
+			} else if(song.contentType != null) {
+				contentType = song.contentType;
 			}
 
 			MimeType mimeType;
@@ -490,18 +490,18 @@ public class DLNAController extends RemoteController {
 				mimeType = new MimeType("audio", "mpeg");
 			}
 
-			Res res = new Res(mimeType, song.getSize(), url);
+			Res res = new Res(mimeType, song.size, url);
 
-			if(song.getDuration() != null) {
+			if(song.duration != null) {
 				SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("UTC"));
-				res.setDuration(df.format(new Date(song.getDuration() * 1000)));
+				res.setDuration(df.format(new Date(song.duration * 1000)));
 			}
 
-			MusicTrack musicTrack = new MusicTrack(song.getId(), song.getParent(), song.getTitle(), song.getArtist(), song.getAlbum(), song.getArtist(), res);
-			musicTrack.setOriginalTrackNumber(song.getTrack());
+			MusicTrack musicTrack = new MusicTrack(song.id, song.parent, song.title, song.artist, song.album, song.artist, res);
+			musicTrack.setOriginalTrackNumber(song.track);
 
-			if(song.getCoverArt() != null) {
+			if(song.coverArt != null) {
 				String coverArt = null;
 				if(proxy == null || proxy instanceof WebProxy) {
 					coverArt = musicService.getCoverArtUrl(downloadService, song);

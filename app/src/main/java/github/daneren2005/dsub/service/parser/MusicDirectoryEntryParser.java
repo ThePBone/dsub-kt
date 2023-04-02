@@ -33,49 +33,49 @@ public class MusicDirectoryEntryParser extends AbstractParser {
 
     protected MusicDirectory.Entry parseEntry(String artist) {
         MusicDirectory.Entry entry = new MusicDirectory.Entry();
-        entry.setId(get("id"));
-		entry.setParent(get("parent"));
-		entry.setArtistId(get("artistId"));
-        entry.setTitle(get("title"));
-		if(entry.getTitle() == null) {
-			entry.setTitle(get("name"));
+        entry.id = get("id");
+		entry.parent = get("parent");
+		entry.artistId = get("artistId");
+        entry.title = get("title");
+		if(entry.title == null) {
+			entry.title = get("name");
 		}
         entry.setDirectory(getBoolean("isDir"));
-        entry.setCoverArt(get("coverArt"));
-        entry.setArtist(get("artist"));
+        entry.coverArt = get("coverArt");
+        entry.artist = get("artist");
         entry.setStarred(get("starred") != null);
-        entry.setYear(getInteger("year"));
-        entry.setGenre(get("genre"));
-		entry.setAlbum(get("album"));
+        entry.year = getInteger("year");
+        entry.genre = get("genre");
+		entry.album = get("album");
 		entry.setRating(getInteger("userRating"));
 
         if (!entry.isDirectory()) {
-			entry.setAlbumId(get("albumId"));
-            entry.setTrack(getInteger("track"));
-            entry.setContentType(get("contentType"));
-            entry.setSuffix(get("suffix"));
-            entry.setTranscodedContentType(get("transcodedContentType"));
-            entry.setTranscodedSuffix(get("transcodedSuffix"));
-            entry.setSize(getLong("size"));
-            entry.setDuration(getInteger("duration"));
-            entry.setBitRate(getInteger("bitRate"));
-            entry.setPath(get("path"));
+			entry.albumId = get("albumId");
+            entry.track = getInteger("track");
+            entry.contentType = get("contentType");
+            entry.suffix = get("suffix");
+            entry.transcodedContentType = get("transcodedContentType");
+            entry.transcodedSuffix = get("transcodedSuffix");
+            entry.size = getLong("size");
+            entry.duration = getInteger("duration");
+            entry.bitRate = getInteger("bitRate");
+            entry.path = get("path");
             entry.setVideo(getBoolean("isVideo"));
-			entry.setDiscNumber(getInteger("discNumber"));
+			entry.discNumber = getInteger("discNumber");
 
 			Integer bookmark = getInteger("bookmarkPosition");
 			if(bookmark != null) {
-				entry.setBookmark(new Bookmark(bookmark));
+				entry.bookmark = new Bookmark(bookmark);
 			}
 
 			String type = get("type");
 			if("podcast".equals(type)) {
-				entry.setType(MusicDirectory.Entry.TYPE_PODCAST);
-			} else if("audiobook".equals(type) || (entry.getGenre() != null && "audiobook".equals(entry.getGenre().toLowerCase()))) {
-				entry.setType(MusicDirectory.Entry.TYPE_AUDIO_BOOK);
+				entry.type = MusicDirectory.Entry.TYPE_PODCAST;
+			} else if("audiobook".equals(type) || (entry.genre != null && "audiobook".equals(entry.genre.toLowerCase()))) {
+				entry.type = MusicDirectory.Entry.TYPE_AUDIO_BOOK;
 			}
         } else if(!"".equals(artist)) {
-			entry.setPath(artist + "/" + entry.getTitle());
+			entry.path = artist + "/" + entry.title;
 		}
         return entry;
     }
@@ -83,9 +83,9 @@ public class MusicDirectoryEntryParser extends AbstractParser {
 	protected MusicDirectory.Entry parseArtist() {
 		MusicDirectory.Entry entry = new MusicDirectory.Entry();
 		
-		entry.setId(get("id"));
-		entry.setTitle(get("name"));
-		entry.setPath(entry.getTitle());
+		entry.id = get("id");
+		entry.title = get("name");
+		entry.path = entry.title;
 		entry.setStarred(true);
 		entry.setDirectory(true);
 		

@@ -127,7 +127,7 @@ public class SelectArtistFragment extends SelectRecyclerFragment<Serializable> i
 			if (entry.isVideo()) {
 				playVideo(entry);
 			} else {
-				onSongPress(entries, entry);
+				onSongPress(entries, entry, 0, true);
 			}
 		}
 	}
@@ -200,8 +200,8 @@ public class SelectArtistFragment extends SelectRecyclerFragment<Serializable> i
 			MusicDirectory dir = musicService.getMusicDirectory(groupId, groupName, refresh, context, listener);
 			for(Entry entry: dir.getChildren(true, false)) {
 				Artist artist = new Artist();
-				artist.setId(entry.getId());
-				artist.setName(entry.getTitle());
+				artist.setId(entry.id);
+				artist.setName(entry.title);
 				artist.setStarred(entry.isStarred());
 				artists.add(artist);
 			}

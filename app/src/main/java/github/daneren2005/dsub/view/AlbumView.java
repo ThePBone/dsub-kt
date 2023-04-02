@@ -73,24 +73,24 @@ public class AlbumView extends UpdateView2<MusicDirectory.Entry, ImageLoader> {
 		titleView.setText(album.getAlbumDisplay());
 		String artist = "";
 		if(showArtist) {
-			artist = album.getArtist();
+			artist = album.artist;
 			if (artist == null) {
 				artist = "";
 			}
-			if (album.getYear() != null) {
-				artist += " - " + album.getYear();
+			if (album.year != null) {
+				artist += " - " + album.year;
 			}
-		} else if(album.getYear() != null) {
-			artist += album.getYear();
+		} else if(album.year != null) {
+			artist += album.year;
 		}
-		artistView.setText(album.getArtist() == null ? "" : artist);
+		artistView.setText(album.artist == null ? "" : artist);
 		onUpdateImageView();
 		file = null;
 	}
 
 	public void onUpdateImageView() {
 		imageTask = item2.loadImage(coverArtView, item, false, true);
-		coverArtId = item.getCoverArt();
+		coverArtId = item.coverArt;
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class AlbumView extends UpdateView2<MusicDirectory.Entry, ImageLoader> {
 	public void update() {
 		super.update();
 
-		if(!Util.equals(item.getCoverArt(), coverArtId)) {
+		if(!Util.equals(item.coverArt, coverArtId)) {
 			onUpdateImageView();
 		}
 	}

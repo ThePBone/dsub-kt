@@ -57,10 +57,10 @@ public class EntryGridAdapter extends SectionAdapter<Entry> {
 		String artist = null;
 		for(MusicDirectory.Entry entry: entries) {
 			if(artist == null) {
-				artist = entry.getArtist();
+				artist = entry.artist;
 			}
 
-			if(artist != null && !artist.equals(entry.getArtist())) {
+			if(artist != null && !artist.equals(entry.artist)) {
 				showArtist = true;
 			}
 		}

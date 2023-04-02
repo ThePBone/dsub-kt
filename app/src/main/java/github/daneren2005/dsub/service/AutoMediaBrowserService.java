@@ -225,8 +225,8 @@ public class AutoMediaBrowserService extends MediaBrowserServiceCompat {
 				for(Entry album: albumSet.getChildren(true, false)) {
 					MediaDescriptionCompat description = new MediaDescriptionCompat.Builder()
 							.setTitle(album.getAlbumDisplay())
-							.setSubtitle(album.getArtist())
-							.setMediaId(MUSIC_DIRECTORY_PREFIX + album.getId())
+							.setSubtitle(album.artist)
+							.setMediaId(MUSIC_DIRECTORY_PREFIX + album.id)
 							.build();
 
 					mediaItems.add(new MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_BROWSABLE));
@@ -289,14 +289,14 @@ public class AutoMediaBrowserService extends MediaBrowserServiceCompat {
 				// music files
 				for(Entry entry: indexes.getEntries()) {
 					try {
-						entry.setBookmark(null);    // don't resume from a bookmark in a browse listing
+						entry.bookmark = null;    // don't resume from a bookmark in a browse listing
 						Bundle extras = new Bundle();
 						extras.putByteArray(Constants.INTENT_EXTRA_ENTRY_BYTES, entry.toByteArray());
-						extras.putString(Constants.INTENT_EXTRA_NAME_CHILD_ID, entry.getId());
+						extras.putString(Constants.INTENT_EXTRA_NAME_CHILD_ID, entry.id);
 
 						MediaDescriptionCompat description = new MediaDescriptionCompat.Builder()
-								.setTitle(entry.getTitle())
-								.setMediaId(entry.getId())
+								.setTitle(entry.title)
+								.setMediaId(entry.id)
 								.setExtras(extras)
 								.build();
 
@@ -331,22 +331,22 @@ public class AutoMediaBrowserService extends MediaBrowserServiceCompat {
 					if (entry.isDirectory()) {
 						// browse deeper
 						description = new MediaDescriptionCompat.Builder()
-								.setTitle(entry.getTitle())
-								.setMediaId(MUSIC_DIRECTORY_CONTENTS_PREFIX + entry.getId())
+								.setTitle(entry.title)
+								.setMediaId(MUSIC_DIRECTORY_CONTENTS_PREFIX + entry.id)
 								.build();
 
 						mediaItems.add(new MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_BROWSABLE));
 					} else {
 						try {
 							// mark individual songs as directly playable
-							entry.setBookmark(null);    // don't resume from a bookmark in a browse listing
+							entry.bookmark = null;    // don't resume from a bookmark in a browse listing
 							Bundle extras = new Bundle();
 							extras.putByteArray(Constants.INTENT_EXTRA_ENTRY_BYTES, entry.toByteArray());
-							extras.putString(Constants.INTENT_EXTRA_NAME_CHILD_ID, entry.getId());
+							extras.putString(Constants.INTENT_EXTRA_NAME_CHILD_ID, entry.id);
 
 							description = new MediaDescriptionCompat.Builder()
-									.setTitle(entry.getTitle())
-									.setMediaId(entry.getId())
+									.setTitle(entry.title)
+									.setMediaId(entry.id)
 									.setExtras(extras)
 									.build();
 
@@ -409,11 +409,11 @@ public class AutoMediaBrowserService extends MediaBrowserServiceCompat {
 					try {
 						Bundle extras = new Bundle();
 						extras.putByteArray(Constants.INTENT_EXTRA_ENTRY_BYTES, entry.toByteArray());
-						extras.putString(Constants.INTENT_EXTRA_NAME_CHILD_ID, entry.getId());
+						extras.putString(Constants.INTENT_EXTRA_NAME_CHILD_ID, entry.id);
 
 						MediaDescriptionCompat description = new MediaDescriptionCompat.Builder()
-								.setTitle(entry.getTitle())
-								.setMediaId(entry.getId())
+								.setTitle(entry.title)
+								.setMediaId(entry.id)
 								.setExtras(extras)
 								.build();
 
@@ -446,8 +446,8 @@ public class AutoMediaBrowserService extends MediaBrowserServiceCompat {
 					if (entry.isDirectory()) {
 						// browse deeper
 						description = new MediaDescriptionCompat.Builder()
-								.setTitle(entry.getTitle())
-								.setMediaId(ALBUM_CONTENTS_PREFIX + entry.getId())
+								.setTitle(entry.title)
+								.setMediaId(ALBUM_CONTENTS_PREFIX + entry.id)
 								.build();
 
 						mediaItems.add(new MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_BROWSABLE));
@@ -456,11 +456,11 @@ public class AutoMediaBrowserService extends MediaBrowserServiceCompat {
 							// mark individual songs as directly playable
 							Bundle extras = new Bundle();
 							extras.putByteArray(Constants.INTENT_EXTRA_ENTRY_BYTES, entry.toByteArray());
-							extras.putString(Constants.INTENT_EXTRA_NAME_CHILD_ID, entry.getId());
+							extras.putString(Constants.INTENT_EXTRA_NAME_CHILD_ID, entry.id);
 
 							description = new MediaDescriptionCompat.Builder()
-									.setTitle(entry.getTitle())
-									.setMediaId(entry.getId())
+									.setTitle(entry.title)
+									.setMediaId(entry.id)
 									.setExtras(extras)
 									.build();
 
@@ -546,12 +546,12 @@ public class AutoMediaBrowserService extends MediaBrowserServiceCompat {
 						PodcastEpisode podcast = (PodcastEpisode) entry;
 						Bundle podcastExtras = new Bundle();
 						podcastExtras.putByteArray(Constants.INTENT_EXTRA_ENTRY_BYTES, podcast.toByteArray());
-						podcastExtras.putString(Constants.INTENT_EXTRA_NAME_PODCAST_ID, podcast.getId());
+						podcastExtras.putString(Constants.INTENT_EXTRA_NAME_PODCAST_ID, podcast.id);
 
 						MediaDescriptionCompat description = new MediaDescriptionCompat.Builder()
-								.setTitle(podcast.getTitle())
+								.setTitle(podcast.title)
 								.setSubtitle(Util.formatDate(downloadService, podcast.getDate(), false))
-								.setMediaId(PODCAST_PREFIX + podcast.getId())
+								.setMediaId(PODCAST_PREFIX + podcast.id)
 								.setExtras(podcastExtras)
 								.build();
 
@@ -583,12 +583,12 @@ public class AutoMediaBrowserService extends MediaBrowserServiceCompat {
 					try {
 						Bundle extras = new Bundle();
 						extras.putByteArray(Constants.INTENT_EXTRA_ENTRY_BYTES, entry.toByteArray());
-						extras.putString(Constants.INTENT_EXTRA_NAME_CHILD_ID, entry.getId());
+						extras.putString(Constants.INTENT_EXTRA_NAME_CHILD_ID, entry.id);
 
 						MediaDescriptionCompat description = new MediaDescriptionCompat.Builder()
-								.setTitle(entry.getTitle())
-								.setSubtitle(Util.formatDuration(entry.getBookmark().getPosition() / 1000))
-								.setMediaId(entry.getId())
+								.setTitle(entry.title)
+								.setSubtitle(Util.formatDuration(entry.bookmark.getPosition() / 1000))
+								.setMediaId(entry.id)
 								.setExtras(extras)
 								.build();
 

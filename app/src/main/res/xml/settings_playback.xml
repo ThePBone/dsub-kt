@@ -1,52 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:myns="http://schemas.android.com/apk/res-auto"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:title="@string/settings.playback_title">
 
 	<PreferenceCategory
 		android:title="@string/settings.playback_title">
 
-		<github.daneren2005.dsub.view.SeekBarPreference
+		<github.daneren2005.dsub.preferences.MaterialSeekbarPreference
 			android:title="@string/settings.playlist_random_size_title"
 			android:key="randomSize"
 			android:defaultValue="20"
 			android:dialogLayout="@layout/seekbar_preference"
-			myns:max="100"/>
+			app:allowDividerAbove="false"
+			app:seekBarIncrement="1"
+			app:precision="0"
+			app:maxValue="100"/>
 
 		<ListPreference
 			android:title="@string/settings.keep_played_count_title"
 			android:key="keepPlayedCount"
 			android:defaultValue="0"
 			android:entryValues="@array/keepPlayedCountValues"
-			android:entries="@array/keepPlayedCountNames"/>
+			android:entries="@array/keepPlayedCountNames"
+			app:useSimpleSummaryProvider="true"/>
 
 		<ListPreference
 			android:title="@string/settings.temp_loss_title"
 			android:key="tempLoss"
 			android:defaultValue="1"
 			android:entryValues="@array/tempLossValues"
-			android:entries="@array/tempLossNames"/>
+			android:entries="@array/tempLossNames"
+			app:useSimpleSummaryProvider="true"/>
 
 		<ListPreference
 			android:title="@string/settings.disconnect_pause_title"
 			android:key="pauseOnDisconnect"
 			android:defaultValue="0"
 			android:entryValues="@array/disconnectPauseValues"
-			android:entries="@array/disconnectPauseNames"/>
+			android:entries="@array/disconnectPauseNames"
+			app:useSimpleSummaryProvider="true"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.persistent_title"
 			android:summary="@string/settings.persistent_summary"
 			android:key="persistentNotification"
 			android:defaultValue="false"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.heads_up_notification"
 			android:summary="@string/settings.heads_up_notification_summary"
 			android:key="headsUpNotification"
 			android:defaultValue="false"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.media_style_notification"
 			android:summary="@string/settings.media_style_notification_summary"
 			android:key="mediaStyleNotification"
@@ -57,21 +63,28 @@
 			android:key="songPressAction"
 			android:defaultValue="all"
 			android:entryValues="@array/songPressActionValues"
-			android:entries="@array/songPressActionNames"/>
+			android:entries="@array/songPressActionNames"
+			app:useSimpleSummaryProvider="true"/>
 
-        <github.daneren2005.dsub.view.SeekBarPreference
+        <github.daneren2005.dsub.preferences.MaterialSeekbarPreference
             android:title="@string/settings.rewind_interval"
             android:key="rewindInterval"
             android:defaultValue="10"
             android:dialogLayout="@layout/seekbar_preference"
-            myns:max="60"/>
+			app:allowDividerAbove="false"
+			app:seekBarIncrement="1"
+			app:precision="0"
+            app:maxValue="60"/>
 
-        <github.daneren2005.dsub.view.SeekBarPreference
+        <github.daneren2005.dsub.preferences.MaterialSeekbarPreference
             android:title="@string/settings.fastforward_interval"
             android:key="fastforwardInterval"
             android:defaultValue="30"
             android:dialogLayout="@layout/seekbar_preference"
-            myns:max="60"/>
+			app:allowDividerAbove="false"
+			app:seekBarIncrement="1"
+			app:precision="0"
+            app:maxValue="60"/>
 	</PreferenceCategory>
 
 	<PreferenceCategory
@@ -82,13 +95,14 @@
 			android:key="videoPlayer"
 			android:defaultValue="hls"
 			android:entryValues="@array/videoPlayerValues"
-			android:entries="@array/videoPlayerNames"/>
+			android:entries="@array/videoPlayerNames"
+			app:useSimpleSummaryProvider="true"/>
 	</PreferenceCategory>
 
 	<PreferenceCategory
 		android:title="@string/settings.replay_gain">
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.replay_gain"
 			android:summary="@string/settings.replay_gain_summary"
 			android:key="replayGain"
@@ -99,62 +113,62 @@
 			android:key="replayGainType"
 			android:defaultValue="1"
 			android:entryValues="@array/replayGainTypeValues"
-			android:entries="@array/replayGainTypeNames"/>
+			android:entries="@array/replayGainTypeNames"
+			app:useSimpleSummaryProvider="true"/>
 
-		<github.daneren2005.dsub.view.SeekBarPreference
+		<github.daneren2005.dsub.preferences.MaterialSeekbarPreference
 			android:key="replayGainBump2"
 			android:dialogLayout="@layout/seekbar_preference"
 			android:title="@string/settings.replay_gain_bump"
 			android:defaultValue="150"
-			myns:max="150"
-			myns:min="-150"
-			myns:stepSize="10"
-			myns:display="%+.1f dB"/>
+			app:allowDividerAbove="false"
+			app:maxValue="150"
+			app:minValue="-150"
+			app:seekBarIncrement="10"
+			app:precision="1"
+			app:unit="dB"/>
 
-		<github.daneren2005.dsub.view.SeekBarPreference
+		<github.daneren2005.dsub.preferences.MaterialSeekbarPreference
 			android:key="replayGainUntagged2"
 			android:dialogLayout="@layout/seekbar_preference"
 			android:title="@string/settings.replay_gain_untagged"
 			android:defaultValue="150"
-			myns:max="0"
-			myns:min="-150"
-			myns:stepSize="10"
-			myns:display="%+.1f dB"/>
+			app:allowDividerAbove="false"
+			app:maxValue="0"
+			app:minValue="-150"
+			app:seekBarIncrement="10"
+			app:precision="1"
+			app:unit="dB"/>
 	</PreferenceCategory>
 
 	<PreferenceCategory
 		android:title="@string/settings.other_title"
 		android:key="otherSettings">
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.shuffle_by_album"
 			android:key="shuffleByAlbum"
 			android:defaultValue="true"
 			android:summaryOn="@string/settings.shuffle_by_album.true"
 			android:summaryOff="@string/settings.shuffle_by_album.false"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.scrobble_title"
 			android:summary="@string/settings.scrobble_summary"
 			android:key="scrobble"
 			android:defaultValue="true"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.media_button_title"
 			android:summary="@string/settings.media_button_summary"
 			android:key="mediaButtons"
 			android:defaultValue="true"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.gapless_playback"
 			android:summary="@string/settings.gapless_playback_summary"
 			android:key="gaplessPlayback"
 			android:defaultValue="true"/>
 
-		<CheckBoxPreference
-			android:title="@string/settings.start_on_headphones"
-			android:summary="@string/settings.start_on_headphones_summary"
-			android:key="startOnHeadphones"
-			android:defaultValue="false"/>
 	</PreferenceCategory>
 </PreferenceScreen>

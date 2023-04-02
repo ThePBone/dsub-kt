@@ -91,7 +91,7 @@ public class SelectBookmarkFragment extends SelectRecyclerFragment<MusicDirector
 			return;
 		}
 
-		boolean allowPlayAll = ((!Util.isTagBrowsing(context) && bookmark.getParent() != null) || (Util.isTagBrowsing(context) && bookmark.getAlbumId() != null)) && !bookmark.isPodcast();
+		boolean allowPlayAll = ((!Util.isTagBrowsing(context) && bookmark.parent != null) || (Util.isTagBrowsing(context) && bookmark.albumId != null)) && !bookmark.isPodcast();
 		if(allowPlayAll && "all".equals(Util.getSongPressAction(context))) {
 			new RecursiveLoader(context) {
 				@Override
@@ -99,9 +99,9 @@ public class SelectBookmarkFragment extends SelectRecyclerFragment<MusicDirector
 					getSiblingsRecursively(bookmark);
 
 					if(songs.isEmpty() || !songs.contains(bookmark)) {
-						playNowInTask(Arrays.asList(bookmark), bookmark, bookmark.getBookmark().getPosition());
+						playNowInTask(Arrays.asList(bookmark), bookmark, bookmark.bookmark.getPosition(), null, null);
 					} else {
-						playNowInTask(songs, bookmark, bookmark.getBookmark().getPosition());
+						playNowInTask(songs, bookmark, bookmark.bookmark.getPosition(), null, null);
 					}
 					return null;
 				}
@@ -112,25 +112,25 @@ public class SelectBookmarkFragment extends SelectRecyclerFragment<MusicDirector
 				}
 			}.execute();
 		} else {
-			onSongPress(Arrays.asList(bookmark), bookmark, bookmark.getBookmark().getPosition(), false);
+			onSongPress(Arrays.asList(bookmark), bookmark, bookmark.bookmark.getPosition(), false);
 		}
 	}
 
 	private void displayBookmarkInfo(final MusicDirectory.Entry entry) {
-		Bookmark bookmark = entry.getBookmark();
+		Bookmark bookmark = entry.bookmark;
 		List<Integer> headers = new ArrayList<>();
 		List<String> details = new ArrayList<>();
 
 		headers.add(R.string.details_song);
-		details.add(entry.getTitle());
+		details.add(entry.title);
 
-		if(entry.getArtist() != null) {
+		if(entry.artist != null) {
 			headers.add(R.string.details_artist);
-			details.add(entry.getArtist());
+			details.add(entry.artist);
 		}
-		if(entry.getAlbum() != null) {
+		if(entry.album != null) {
 			headers.add(R.string.details_album);
-			details.add(entry.getAlbum());
+			details.add(entry.album);
 		}
 
 		headers.add(R.string.details_position);

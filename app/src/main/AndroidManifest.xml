@@ -38,7 +38,8 @@
     	android:icon="@drawable/launch"
     	android:theme="@style/Theme.DSub.Light"
 		android:largeHeap="true"
-		android:usesCleartextTraffic="true">
+		android:usesCleartextTraffic="true"
+		android:name=".MainApplication">
     	
         <uses-library android:name="android.test.runner" />
 
@@ -80,17 +81,6 @@
             </intent-filter>
             <meta-data android:name="android.app.searchable" android:resource="@xml/searchable"/>
         </activity>
-
-		<activity
-			android:name="github.daneren2005.dsub.activity.EditPlayActionActivity"
-			android:label="@string/tasker.start_playing"
-			android:icon="@drawable/launch"
-			android:exported="false">
-
-			<intent-filter>
-				<action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
-			</intent-filter>
-		</activity>
 
         <service android:name="github.daneren2005.dsub.service.DownloadService"
                  android:label="DSub Playback Service"
@@ -155,30 +145,12 @@
 					   android:resource="@xml/mostrecent_syncadapter" />
 		</service>
 
-		<service android:name="github.daneren2005.dsub.service.HeadphoneListenerService"
-			android:label="DSub Headphone Listener"/>
-		<receiver
-			android:name="github.daneren2005.dsub.receiver.BootReceiver"
-			android:exported="true">
-			<intent-filter>
-				<action
-					android:name="android.intent.action.BOOT_COMPLETED" />
-			</intent-filter>
-		</receiver>
-
         <receiver android:name="github.daneren2005.dsub.receiver.MediaButtonIntentReceiver"
 			android:exported="true">
         	<intent-filter>
 				<action android:name="android.intent.action.MEDIA_BUTTON" />
 			</intent-filter>
         </receiver>
-
-		<receiver android:name="github.daneren2005.dsub.receiver.A2dpIntentReceiver"
-			android:exported="true">
-			<intent-filter>
-				<action android:name="android.music.playstatusrequest"/>
-			</intent-filter>
-		</receiver>
 
         <receiver
 			android:name="github.daneren2005.dsub.provider.DSubWidget4x1"
@@ -216,14 +188,6 @@
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/appwidget4x4"/>
         </receiver>
-
-		<receiver
-			android:name="github.daneren2005.dsub.receiver.PlayActionReceiver"
-			android:exported="true">
-			<intent-filter>
-				<action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
-			</intent-filter>
-		</receiver>
 
         <provider android:name="github.daneren2005.dsub.provider.DSubSearchProvider"
                   android:authorities="@string/provider.search"/>

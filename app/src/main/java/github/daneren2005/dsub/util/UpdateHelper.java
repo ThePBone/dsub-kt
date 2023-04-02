@@ -107,7 +107,7 @@ public final class UpdateHelper {
 			protected void done(Void result) {
 				// UpdateView
 				int starMsgId = starred ? R.string.starring_content_starred : R.string.starring_content_unstarred;
-				String starMsgBody = (entries.size() > 1) ? Integer.toString(entries.size()) : firstEntry.getTitle();
+				String starMsgBody = (entries.size() > 1) ? Integer.toString(entries.size()) : firstEntry.title;
 				Util.toast(context, context.getResources().getString(starMsgId, starMsgBody));
 
 				if(onStarChange != null) {
@@ -129,7 +129,7 @@ public final class UpdateHelper {
 				if (error instanceof OfflineException || error instanceof ServerTooOldException) {
 					msg = getErrorMessage(error);
 				} else {
-					String errorBody = (entries.size() > 1) ? Integer.toString(entries.size()) : firstEntry.getTitle();
+					String errorBody = (entries.size() > 1) ? Integer.toString(entries.size()) : firstEntry.title;
 					msg = context.getResources().getString(R.string.starring_content_error, errorBody) + " " + getErrorMessage(error);
 				}
 
@@ -186,7 +186,7 @@ public final class UpdateHelper {
 		ratingBar.setRating((float) entry.getRating());
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
-		builder.setTitle(context.getResources().getString(R.string.rating_title, entry.getTitle()))
+		builder.setTitle(context.getResources().getString(R.string.rating_title, entry.title))
 				.setView(layout)
 				.setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
 					@Override
@@ -229,7 +229,7 @@ public final class UpdateHelper {
 
 			@Override
 			protected void done(Void result) {
-				Util.toast(context, context.getResources().getString(rating > 0 ? R.string.rating_set_rating : R.string.rating_remove_rating, entry.getTitle()));
+				Util.toast(context, context.getResources().getString(rating > 0 ? R.string.rating_set_rating : R.string.rating_remove_rating, entry.title));
 			}
 
 			@Override
@@ -243,7 +243,7 @@ public final class UpdateHelper {
 				if (error instanceof OfflineException || error instanceof ServerTooOldException) {
 					msg = getErrorMessage(error);
 				} else {
-					msg = context.getResources().getString(rating > 0 ? R.string.rating_set_rating_failed : R.string.rating_remove_rating_failed, entry.getTitle()) + " " + getErrorMessage(error);
+					msg = context.getResources().getString(rating > 0 ? R.string.rating_set_rating_failed : R.string.rating_remove_rating_failed, entry.title) + " " + getErrorMessage(error);
 				}
 
 				Log.e(TAG, "Failed to setRating", error);
@@ -275,11 +275,11 @@ public final class UpdateHelper {
 
 				for(DownloadFile file: downloadFiles) {
 					Entry check = file.getSong();
-					if(entry.getId().equals(check.getId())) {
+					if(entry.id.equals(check.id)) {
 						update(check);
 						serializeChanges = true;
 
-						if(currentPlaying != null && currentPlaying.getSong() != null && currentPlaying.getSong().getId().equals(entry.getId())) {
+						if(currentPlaying != null && currentPlaying.getSong() != null && currentPlaying.getSong().id.equals(entry.id)) {
 							downloadService.onMetadataUpdate(metadataUpdate);
 						}
 					}

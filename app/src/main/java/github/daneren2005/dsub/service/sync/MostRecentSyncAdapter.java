@@ -58,22 +58,22 @@ public class MostRecentSyncAdapter extends SubsonicSyncAdapter {
 			if(syncedList.size() == 0) {
 				// Get the initial set of albums on first run, don't sync any of these!
 				for(MusicDirectory.Entry album: albumList.getChildren()) {
-					syncedList.add(album.getId());
+					syncedList.add(album.id);
 				}
 				firstRun = true;
 			} else {
 				for(MusicDirectory.Entry album: albumList.getChildren()) {
-					if(!syncedList.contains(album.getId())) {
-						if(!"Podcast".equals(album.getGenre())) {
+					if(!syncedList.contains(album.id)) {
+						if(!"Podcast".equals(album.genre)) {
 							try {
 								if(downloadRecursively(null, getMusicDirectory(album), context, false)) {
-									updated.add(album.getTitle());
+									updated.add(album.title);
 								}
 							} catch(Exception e) {
-								Log.w(TAG, "Failed to get songs for " + album.getId() + " on " + Util.getServerName(context, instance));
+								Log.w(TAG, "Failed to get songs for " + album.id + " on " + Util.getServerName(context, instance));
 							}
 						}
-						syncedList.add(album.getId());
+						syncedList.add(album.id);
 					}
 				}
 			}

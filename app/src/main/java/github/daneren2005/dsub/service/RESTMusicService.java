@@ -244,7 +244,7 @@ public class RESTMusicService implements MusicService {
 			if(result.getArtists().size() == 1) {
 				id = result.getArtists().get(0).getId();
 			} else if(result.getAlbums().size() == 1) {
-				id = result.getAlbums().get(0).getId();
+				id = result.getAlbums().get(0).id;
 			}
 		}
 
@@ -390,7 +390,7 @@ public class RESTMusicService implements MusicService {
         }
         for (MusicDirectory.Entry entry : entries) {
             parameterNames.add("songId");
-            parameterValues.add(getOfflineSongId(entry.getId(), context, progressListener));
+            parameterValues.add(getOfflineSongId(entry.id, context, progressListener));
         }
 
         Reader reader = getReader(context, progressListener, "createPlaylist", parameterNames, parameterValues);
@@ -420,7 +420,7 @@ public class RESTMusicService implements MusicService {
 		values.add(id);
 		for(MusicDirectory.Entry song: toAdd) {
 			names.add("songIdToAdd");
-			values.add(getOfflineSongId(song.getId(), context, progressListener));
+			values.add(getOfflineSongId(song.id, context, progressListener));
 		}
 		Reader reader = getReader(context, progressListener, "updatePlaylist", names, values);
     	try {
@@ -460,7 +460,7 @@ public class RESTMusicService implements MusicService {
 		values.add(name);
 		for(MusicDirectory.Entry song: toAdd) {
 			names.add("songIdToAdd");
-			values.add(song.getId());
+			values.add(song.id);
 		}
 		for(int i = 0; i < toRemove; i++) {
 			names.add("songIndexToRemove");
@@ -795,7 +795,7 @@ public class RESTMusicService implements MusicService {
 	@Override
 	public String getCoverArtUrl(Context context, MusicDirectory.Entry entry) throws Exception {
 		StringBuilder builder = new StringBuilder(getRestUrl(context, "getCoverArt"));
-		builder.append("&id=").append(entry.getCoverArt());
+		builder.append("&id=").append(entry.coverArt);
 		String url = builder.toString();
 		url = Util.replaceInternalUrl(context, url);
 		url = rewriteUrlWithRedirect(context, url);
@@ -808,7 +808,7 @@ public class RESTMusicService implements MusicService {
         synchronized (entry) {
 			String url = getRestUrl(context, "getCoverArt");
 			List<String> parameterNames = Arrays.asList("id");
-			List<Object> parameterValues = Arrays.<Object>asList(entry.getCoverArt());
+			List<Object> parameterValues = Arrays.<Object>asList(entry.coverArt);
 
 			return getBitmapFromUrl(context, url, parameterNames, parameterValues, size, FileUtil.getAlbumArtFile(context, entry), true, progressListener, task);
         }
@@ -822,7 +822,7 @@ public class RESTMusicService implements MusicService {
 		parameterNames.add("maxBitRate");
 
 		List<Object> parameterValues = new ArrayList<>();
-		parameterValues.add(song.getId());
+		parameterValues.add(song.id);
 		parameterValues.add(maxBitrate);
 
 		// If video specify what format to download
@@ -872,10 +872,10 @@ public class RESTMusicService implements MusicService {
 	@Override
 	public String getMusicUrl(Context context, MusicDirectory.Entry song, int maxBitrate) throws Exception {
 		StringBuilder builder = new StringBuilder(getRestUrl(context, "stream"));
-		builder.append("&id=").append(song.getId());
+		builder.append("&id=").append(song.id);
 
 		// Allow user to specify to stream raw formats if available
-		if(Util.getPreferences(context).getBoolean(Constants.PREFERENCES_KEY_CAST_STREAM_ORIGINAL, true) && ("mp3".equals(song.getSuffix()) || "flac".equals(song.getSuffix()) || "wav".equals(song.getSuffix()) || "aac".equals(song.getSuffix())) && ServerInfo.checkServerVersion(context, "1.9", getInstance(context))) {
+		if(Util.getPreferences(context).getBoolean(Constants.PREFERENCES_KEY_CAST_STREAM_ORIGINAL, true) && ("mp3".equals(song.suffix) || "flac".equals(song.suffix) || "wav".equals(song.suffix) || "aac".equals(song.suffix)) && ServerInfo.checkServerVersion(context, "1.9", getInstance(context))) {
 			builder.append("&format=raw");
 		} else {
 			builder.append("&maxBitRate=").append(maxBitrate);
@@ -996,23 +996,23 @@ public class RESTMusicService implements MusicService {
 			if(entries.size() > 1) {
 				for (MusicDirectory.Entry entry : entries) {
 					names.add("id");
-					values.add(entry.getId());
+					values.add(entry.id);
 				}
 			} else {
 				names.add("id");
-				values.add(getOfflineSongId(entries.get(0).getId(), context, progressListener));
+				values.add(getOfflineSongId(entries.get(0).id, context, progressListener));
 			}
 		}
 		if(artists != null && artists.size() > 0) {
 			for (MusicDirectory.Entry artist : artists) {
 				names.add("artistId");
-				values.add(artist.getId());
+				values.add(artist.id);
 			}
 		}
 		if(albums != null && albums.size() > 0) {
 			for (MusicDirectory.Entry album : albums) {
 				names.add("albumId");
-				values.add(album.getId());
+				values.add(album.id);
 			}
 		}
 
@@ -1322,7 +1322,7 @@ public class RESTMusicService implements MusicService {
 	public void setRating(MusicDirectory.Entry entry, int rating, Context context, ProgressListener progressListener) throws Exception {
 		checkServerVersion(context, "1.6", "Setting ratings not supported.");
 
-		Reader reader = getReader(context, progressListener, "setRating", Arrays.asList("id", "rating"), Arrays.<Object>asList(entry.getId(), rating));
+		Reader reader = getReader(context, progressListener, "setRating", Arrays.asList("id", "rating"), Arrays.<Object>asList(entry.id, rating));
 		try {
 			new ErrorParser(context, getInstance(context)).parse(reader);
 		} finally {
@@ -1346,7 +1346,7 @@ public class RESTMusicService implements MusicService {
 	public void createBookmark(MusicDirectory.Entry entry, int position, String comment, Context context, ProgressListener progressListener) throws Exception {
 		checkServerVersion(context, "1.9", "Creating bookmarks not supported.");
 
-		Reader reader = getReader(context, progressListener, "createBookmark", Arrays.asList("id", "position", "comment"), Arrays.<Object>asList(entry.getId(), position, comment));
+		Reader reader = getReader(context, progressListener, "createBookmark", Arrays.asList("id", "position", "comment"), Arrays.<Object>asList(entry.id, position, comment));
 		try {
 			new ErrorParser(context, getInstance(context)).parse(reader);
 		} finally {
@@ -1358,7 +1358,7 @@ public class RESTMusicService implements MusicService {
 	public void deleteBookmark(MusicDirectory.Entry entry, Context context, ProgressListener progressListener) throws Exception {
 		checkServerVersion(context, "1.9", "Deleting bookmarks not supported.");
 
-		Reader reader = getReader(context, progressListener, "deleteBookmark", Arrays.asList("id"), Arrays.<Object>asList(entry.getId()));
+		Reader reader = getReader(context, progressListener, "deleteBookmark", Arrays.asList("id"), Arrays.<Object>asList(entry.id));
 		try {
 			new ErrorParser(context, getInstance(context)).parse(reader);
 		} finally {
@@ -1559,11 +1559,11 @@ public class RESTMusicService implements MusicService {
 
 		for(MusicDirectory.Entry song: songs) {
 			parameterNames.add("id");
-			parameterValues.add(song.getId());
+			parameterValues.add(song.id);
 		}
 
 		parameterNames.add("current");
-		parameterValues.add(currentPlaying.getId());
+		parameterValues.add(currentPlaying.id);
 
 		parameterNames.add("position");
 		parameterValues.add(position);
@@ -1619,9 +1619,9 @@ public class RESTMusicService implements MusicService {
 					SearchCritera critera = new SearchCritera(search, 0, 0, 1);
 					SearchResult result = searchNew(critera, context, progressListener);
 					if(result.getSongs().size() == 1){
-						Log.i(TAG, "Query '" + search + "' returned song " + result.getSongs().get(0).getTitle() + " by " + result.getSongs().get(0).getArtist() + " with id " + result.getSongs().get(0).getId());
-						Log.i(TAG, "Scrobbling " + result.getSongs().get(0).getId() + " with time " + time);
-						scrobble(result.getSongs().get(0).getId(), true, time, context, progressListener);
+						Log.i(TAG, "Query '" + search + "' returned song " + result.getSongs().get(0).title + " by " + result.getSongs().get(0).artist + " with id " + result.getSongs().get(0).id);
+						Log.i(TAG, "Scrobbling " + result.getSongs().get(0).id + " with time " + time);
+						scrobble(result.getSongs().get(0).id, true, time, context, progressListener);
 					}
 					else{
 						throw new Exception("Song not found on server");
@@ -1657,11 +1657,11 @@ public class RESTMusicService implements MusicService {
 					SearchResult result = searchNew(critera, context, progressListener);
 					if(result.getSongs().size() == 1) {
 						MusicDirectory.Entry song = result.getSongs().get(0);
-						Log.i(TAG, "Query '" + search + "' returned song " + song.getTitle() + " by " + song.getArtist() + " with id " + song.getId());
+						Log.i(TAG, "Query '" + search + "' returned song " + song.title + " by " + song.artist + " with id " + song.id);
 						setStarred(Arrays.asList(song), null, null, starred, progressListener, context);
 					} else if(result.getAlbums().size() == 1) {
 						MusicDirectory.Entry album = result.getAlbums().get(0);
-						Log.i(TAG, "Query '" + search + "' returned album " + album.getTitle() + " by " + album.getArtist() + " with id " + album.getId());
+						Log.i(TAG, "Query '" + search + "' returned album " + album.title + " by " + album.artist + " with id " + album.id);
 						if(Util.isTagBrowsing(context, getInstance(context))) {
 							setStarred(null, null, Arrays.asList(album), starred, progressListener, context);
 						} else {
@@ -1697,7 +1697,7 @@ public class RESTMusicService implements MusicService {
 				SearchCritera critera = new SearchCritera(searchCriteria, 0, 0, 1);
 				SearchResult result = searchNew(critera, context, progressListener);
 				if (result.getSongs().size() == 1) {
-					id = result.getSongs().get(0).getId();
+					id = result.getSongs().get(0).id;
 				}
 			}
 		}

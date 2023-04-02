@@ -89,6 +89,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
+
+import androidx.annotation.Nullable;
 import androidx.mediarouter.media.MediaRouteSelector;
 import androidx.mediarouter.media.MediaRouter;
 import android.util.Log;
@@ -1487,7 +1489,7 @@ public class DownloadService extends Service {
 		}
 
 		if (currentPlaying != null) {
-			Integer duration = currentPlaying.getSong().getDuration();
+			Integer duration = currentPlaying.getSong().duration;
 			if (duration != null) {
 				return duration * 1000;
 			}
@@ -1685,10 +1687,6 @@ public class DownloadService extends Service {
 
 	public String getSuggestedPlaylistId() {
 		return suggestedPlaylistId;
-	}
-
-	public boolean getEqualizerAvailable() {
-		return effectsController.isAvailable();
 	}
 
 	public EqualizerController getEqualizerController() {
@@ -2088,7 +2086,7 @@ public class DownloadService extends Service {
 	}
 
 	private void setupHandlers(final DownloadFile downloadFile, final boolean isPartial, final boolean isPlaying) {
-		final int duration = downloadFile.getSong().getDuration() == null ? 0 : downloadFile.getSong().getDuration() * 1000;
+		final int duration = downloadFile.getSong().duration == null ? 0 : downloadFile.getSong().duration * 1000;
 		mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
 			public boolean onError(MediaPlayer mediaPlayer, int what, int extra) {
 				Log.w(TAG, "Error on playing file " + "(" + what + ", " + extra + "): " + downloadFile);
@@ -2374,7 +2372,7 @@ public class DownloadService extends Service {
 
 		// Get users desired random playlist size
 		SharedPreferences prefs = Util.getPreferences(this);
-		int listSize = Math.max(1, Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_RANDOM_SIZE, "20")));
+		int listSize = (int) Math.max(1, prefs.getFloat(Constants.PREFERENCES_KEY_RANDOM_SIZE, 20.0f));
 		boolean wasEmpty = downloadList.isEmpty();
 
 		long revisionBefore = revision;
@@ -2416,7 +2414,7 @@ public class DownloadService extends Service {
 	private synchronized void checkArtistRadio() {
 		// Get users desired random playlist size
 		SharedPreferences prefs = Util.getPreferences(this);
-		int listSize = Math.max(1, Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_RANDOM_SIZE, "20")));
+		int listSize = (int) Math.max(1, prefs.getFloat(Constants.PREFERENCES_KEY_RANDOM_SIZE, 20.0f));
 		boolean wasEmpty = downloadList.isEmpty();
 
 		long revisionBefore = revision;
@@ -2507,8 +2505,8 @@ public class DownloadService extends Service {
 		
 		// Check to make sure song isn't within 10 seconds of where it was created
 		MusicDirectory.Entry entry = currentPlaying.getSong();
-		if(entry != null && entry.getBookmark() != null) {
-			Bookmark bookmark = entry.getBookmark();
+		if(entry != null && entry.bookmark != null) {
+			Bookmark bookmark = entry.bookmark;
 			if(position < (bookmark.getPosition() + 10000)) {
 				isPastCutoff = false;
 			}
@@ -2521,7 +2519,7 @@ public class DownloadService extends Service {
 			// Next playing exists and is not a wrap around or a shuffle
 			// Next playing is from same context as current playing, so not at end of list
 			if(entry.isAudioBook() && nextPlaying != null && downloadList.indexOf(nextPlaying) != 0 && !shufflePlay
-					&& entry.getParent() != null && entry.getParent().equals(nextPlaying.getSong().getParent())) {
+					&& entry.parent != null && entry.parent.equals(nextPlaying.getSong().parent)) {
 				isPastCutoff = false;
 			}
 		}
@@ -2542,7 +2540,7 @@ public class DownloadService extends Service {
 	}
 	private void clearCurrentBookmark(final MusicDirectory.Entry entry, boolean checkDelete) {
 		// If no bookmark, move on
-		if(entry.getBookmark() == null) {
+		if(entry.bookmark == null) {
 			return;
 		}
 		
@@ -2557,12 +2555,12 @@ public class DownloadService extends Service {
 				@Override
 				public Void doInBackground() throws Throwable {
 					MusicService musicService = MusicServiceFactory.getMusicService(DownloadService.this);
-					entry.setBookmark(null);
+					entry.bookmark = null;
 					musicService.deleteBookmark(entry, DownloadService.this, null);
 
 					MusicDirectory.Entry found = UpdateView.findEntry(entry);
 					if(found != null) {
-						found.setBookmark(null);
+						found.bookmark = null;
 					}
 					return null;
 				}
@@ -2575,7 +2573,7 @@ public class DownloadService extends Service {
 					if(error instanceof OfflineException || error instanceof ServerTooOldException) {
 						msg = getErrorMessage(error);
 					} else {
-						msg = DownloadService.this.getResources().getString(R.string.bookmark_deleted_error, entry.getTitle()) + " " + getErrorMessage(error);
+						msg = DownloadService.this.getResources().getString(R.string.bookmark_deleted_error, entry.title) + " " + getErrorMessage(error);
 					}
 					
 					Util.toast(DownloadService.this, msg, false);
@@ -2610,12 +2608,12 @@ public class DownloadService extends Service {
 				@Override
 				public Void doInBackground() throws Throwable {
 					MusicService musicService = MusicServiceFactory.getMusicService(context);
-					entry.setBookmark(new Bookmark(position));
+					entry.bookmark = new Bookmark(position);
 					musicService.createBookmark(entry, position, "Auto created by DSub", context, null);
 
 					MusicDirectory.Entry found = UpdateView.findEntry(entry);
 					if(found != null) {
-						found.setBookmark(new Bookmark(position));
+						found.bookmark = new Bookmark(position);
 					}
 					if(updateMetadata) {
 						onMetadataUpdate(METADATA_UPDATED_BOOKMARK);
@@ -2660,12 +2658,12 @@ public class DownloadService extends Service {
 					
 					int index = downloadList.indexOf(downloadFile);
 					if(index != -1) {
-						String albumName = downloadFile.getSong().getAlbum();
+						String albumName = downloadFile.getSong().album;
 						int matched = 0;
 						
 						// Check forwards
 						for(int i = index + 1; i < downloadList.size() && matched < REQUIRED_ALBUM_MATCHES; i++) {
-							if(Util.equals(albumName, downloadList.get(i).getSong().getAlbum())) {
+							if(Util.equals(albumName, downloadList.get(i).getSong().album)) {
 								matched++;
 							} else {
 								break;
@@ -2674,7 +2672,7 @@ public class DownloadService extends Service {
 						
 						// Check backwards
 						for(int i = index - 1; i >= 0 && matched < REQUIRED_ALBUM_MATCHES; i--) {
-							if(Util.equals(albumName, downloadList.get(i).getSong().getAlbum())) {
+							if(Util.equals(albumName, downloadList.get(i).getSong().album)) {
 								matched++;
 							} else {
 								break;
@@ -2761,7 +2759,7 @@ public class DownloadService extends Service {
 		if(currentPlaying == null || nextPlaying == null) {
 			return false;
 		} else {
-			return currentPlaying.getSong().getAlbum().equals(nextPlaying.getSong().getAlbum());
+			return currentPlaying.getSong().album.equals(nextPlaying.getSong().album);
 		}
 	}
 
@@ -3100,10 +3098,10 @@ public class DownloadService extends Service {
 	}
 
 	public interface OnSongChangedListener {
-		void onSongChanged(DownloadFile currentPlaying, int currentPlayingIndex, boolean shouldFastForward);
-		void onSongsChanged(List<DownloadFile> songs, DownloadFile currentPlaying, int currentPlayingIndex, boolean shouldFastForward);
-		void onSongProgress(DownloadFile currentPlaying, int millisPlayed, Integer duration, boolean isSeekable);
-		void onStateUpdate(DownloadFile downloadFile, PlayerState playerState);
-		void onMetadataUpdate(MusicDirectory.Entry entry, int fieldChange);
+		void onSongChanged(@Nullable DownloadFile currentPlaying, int currentPlayingIndex, boolean shouldFastForward);
+		void onSongsChanged(@Nullable List<DownloadFile> songs, @Nullable  DownloadFile currentPlaying, int currentPlayingIndex, boolean shouldFastForward);
+		void onSongProgress(@Nullable DownloadFile currentPlaying, int millisPlayed, Integer duration, boolean isSeekable);
+		void onStateUpdate(@Nullable DownloadFile downloadFile, PlayerState playerState);
+		void onMetadataUpdate(@Nullable MusicDirectory.Entry entry, int fieldChange);
 	}
 }

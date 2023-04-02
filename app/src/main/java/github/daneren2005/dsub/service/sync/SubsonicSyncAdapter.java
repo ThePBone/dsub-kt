@@ -175,11 +175,11 @@ public class SubsonicSyncAdapter extends AbstractThreadedSyncAdapter {
 		return downloaded;
 	}
 	protected MusicDirectory getMusicDirectory(MusicDirectory.Entry dir) throws Exception{
-		String id = dir.getId();
-		String name = dir.getTitle();
+		String id = dir.id;
+		String name = dir.title;
 
 		if(tagBrowsing) {
-			if(dir.getArtist() == null) {
+			if(dir.artist == null) {
 				return musicService.getArtist(id, name, true, context, null);
 			} else {
 				return musicService.getAlbum(id, name, true, context, null);

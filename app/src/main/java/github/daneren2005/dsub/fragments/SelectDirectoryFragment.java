@@ -1,6 +1,7 @@
 package github.daneren2005.dsub.fragments;
 
 import android.annotation.TargetApi;
+
 import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -333,8 +334,8 @@ public class SelectDirectoryFragment extends SubsonicFragment implements Section
 		if (entry.isDirectory()) {
 			SubsonicFragment fragment = new SelectDirectoryFragment();
 			Bundle args = new Bundle();
-			args.putString(Constants.INTENT_EXTRA_NAME_ID, entry.getId());
-			args.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.getTitle());
+			args.putString(Constants.INTENT_EXTRA_NAME_ID, entry.id);
+			args.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.title);
 			args.putSerializable(Constants.INTENT_EXTRA_NAME_DIRECTORY, entry);
 			if ("newest".equals(albumListType)) {
 				args.putBoolean(Constants.INTENT_EXTRA_REFRESH_LISTINGS, true);
@@ -414,17 +415,17 @@ public class SelectDirectoryFragment extends SubsonicFragment implements Section
 			protected MusicDirectory load(MusicService service) throws Exception {
 				MusicDirectory dir = getMusicDirectory(id, name, refresh, service, this);
 
-				if(lookupParent && dir.getParent() != null) {
-					dir = getMusicDirectory(dir.getParent(), name, refresh, service, this);
+				if(lookupParent && dir.parent != null) {
+					dir = getMusicDirectory(dir.parent, name, refresh, service, this);
 
 					// Update the fragment pointers so other stuff works correctly
-					SelectDirectoryFragment.this.id = dir.getId();
-					SelectDirectoryFragment.this.name = dir.getName();
-				} else if(id != null && directory == null && dir.getParent() != null && !artist) {
+					SelectDirectoryFragment.this.id = dir.id;
+					SelectDirectoryFragment.this.name = dir.name;
+				} else if(id != null && directory == null && dir.parent != null && !artist) {
 					// View Album, try to lookup parent to get a complete entry to use for starring
-					MusicDirectory parentDir = getMusicDirectory(dir.getParent(), name, refresh, true, service, this);
+					MusicDirectory parentDir = getMusicDirectory(dir.parent, name, refresh, true, service, this);
 					for(Entry child: parentDir.getChildren()) {
-						if(id.equals(child.getId())) {
+						if(id.equals(child.id)) {
 							directory = child;
 							break;
 						}
@@ -436,7 +437,7 @@ public class SelectDirectoryFragment extends SubsonicFragment implements Section
 
 			@Override
 			protected void done(Pair<MusicDirectory, Boolean> result) {
-				SelectDirectoryFragment.this.name = result.getFirst().getName();
+				SelectDirectoryFragment.this.name = result.getFirst().name;
 				setTitle(SelectDirectoryFragment.this.name);
 				super.done(result);
 			}
@@ -460,8 +461,8 @@ public class SelectDirectoryFragment extends SubsonicFragment implements Section
 
 				// CachedMusicService is refreshing this data in the background, so will wipe out the songs list from root
 				MusicDirectory clonedRoot = new MusicDirectory(songs);
-				clonedRoot.setId(root.getId());
-				clonedRoot.setName(root.getName());
+				clonedRoot.id = root.id;
+				clonedRoot.name = root.name;
 				return clonedRoot;
 			}
 
@@ -472,9 +473,9 @@ public class SelectDirectoryFragment extends SubsonicFragment implements Section
 
 					MusicDirectory musicDirectory;
 					if(Util.isTagBrowsing(context) && !Util.isOffline(context)) {
-						musicDirectory = musicService.getAlbum(dir.getId(), dir.getTitle(), false, context, this);
+						musicDirectory = musicService.getAlbum(dir.id, dir.title, false, context, this);
 					} else {
-						musicDirectory = musicService.getMusicDirectory(dir.getId(), dir.getTitle(), false, context, this);
+						musicDirectory = musicService.getMusicDirectory(dir.id, dir.title, false, context, this);
 					}
 					getSongsRecursively(musicDirectory, songs);
 				}
@@ -482,7 +483,7 @@ public class SelectDirectoryFragment extends SubsonicFragment implements Section
 
 			@Override
 			protected void done(Pair<MusicDirectory, Boolean> result) {
-				SelectDirectoryFragment.this.name = result.getFirst().getName();
+				SelectDirectoryFragment.this.name = result.getFirst().name;
 				setTitle(SelectDirectoryFragment.this.name);
 				super.done(result);
 			}
@@ -644,13 +645,13 @@ public class SelectDirectoryFragment extends SubsonicFragment implements Section
 			if(entryGridAdapter != null && changeCode == CachedMusicService.CACHE_UPDATE_LIST) {
 				entryGridAdapter.notifyDataSetChanged();
 			} else if(changeCode == CachedMusicService.CACHE_UPDATE_METADATA) {
-				if(coverArtView != null && coverArtRep != null && !Util.equals(coverArtRep.getCoverArt(), coverArtId)) {
+				if(coverArtView != null && coverArtRep != null && !Util.equals(coverArtRep.coverArt, coverArtId)) {
 					synchronized (coverArtRep) {
 						if (updateCoverArtTask != null && updateCoverArtTask.isRunning()) {
 							updateCoverArtTask.cancel();
 						}
 						updateCoverArtTask = getImageLoader().loadImage(coverArtView, coverArtRep, false, true);
-						coverArtId = coverArtRep.getCoverArt();
+						coverArtId = coverArtRep.coverArt;
 					}
 				}
 			}
@@ -782,7 +783,7 @@ public class SelectDirectoryFragment extends SubsonicFragment implements Section
 		int scrollToPosition = -1;
 		if(lookupEntry != null) {
 			for(int i = 0; i < entries.size(); i++) {
-				if(lookupEntry.equals(entries.get(i).getTitle())) {
+				if(lookupEntry.equals(entries.get(i).title)) {
 					scrollToPosition = i;
 					entryGridAdapter.addSelected(entries.get(i));
 					lookupEntry = null;
@@ -859,7 +860,7 @@ public class SelectDirectoryFragment extends SubsonicFragment implements Section
 		}
 	}
 	@Override
-	protected void downloadBackground(final boolean save, final List<Entry> entries) {
+	protected void downloadBackground(final boolean save, final List<? extends Entry> entries) {
 		if (getDownloadService() == null) {
 			return;
 		}
@@ -883,7 +884,7 @@ public class SelectDirectoryFragment extends SubsonicFragment implements Section
 	}
 
 	@Override
-	protected void download(List<Entry> entries, boolean append, boolean save, boolean autoplay, boolean playNext, boolean shuffle) {
+	protected void download(List<? extends Entry> entries, boolean append, boolean save, boolean autoplay, boolean playNext, boolean shuffle) {
 		download(entries, append, save, autoplay, playNext, shuffle, playlistName, playlistId);
 	}
 
@@ -1125,14 +1126,14 @@ public class SelectDirectoryFragment extends SubsonicFragment implements Section
 		} else if(entries.size() > 0) {
 			coverArtRep = null;
 			this.coverArtView = coverArtView;
-			for (int i = 0; (i < 3) && (coverArtRep == null || coverArtRep.getCoverArt() == null); i++) {
+			for (int i = 0; (i < 3) && (coverArtRep == null || coverArtRep.coverArt == null); i++) {
 				coverArtRep = entries.get(random.nextInt(entries.size()));
 			}
 
 			coverArtView.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (coverArtRep == null || coverArtRep.getCoverArt() == null) {
+					if (coverArtRep == null || coverArtRep.coverArt == null) {
 						return;
 					}
 
@@ -1148,7 +1149,7 @@ public class SelectDirectoryFragment extends SubsonicFragment implements Section
 				}
 			});
 			synchronized (coverArtRep) {
-				coverArtId = coverArtRep.getCoverArt();
+				coverArtId = coverArtRep.coverArt;
 				updateCoverArtTask = imageLoader.loadImage(coverArtView, coverArtRep, false, true);
 			}
 		}
@@ -1185,13 +1186,13 @@ public class SelectDirectoryFragment extends SubsonicFragment implements Section
 		for (Entry entry : entries) {
 			if (!entry.isDirectory()) {
 				songCount++;
-				if (entry.getArtist() != null) {
-					artists.add(entry.getArtist());
+				if (entry.artist != null) {
+					artists.add(entry.artist);
 				}
-				if(entry.getYear() != null) {
-					years.add(entry.getYear());
+				if(entry.year != null) {
+					years.add(entry.year);
 				}
-				Integer duration = entry.getDuration();
+				Integer duration = entry.duration;
 				if(duration != null) {
 					totalDuration += duration;
 				}

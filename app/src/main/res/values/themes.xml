@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-	<style name="Theme.DSub.Light.Base" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+	<style name="Theme.DSub.Light.Base" parent="@style/Theme.Material3.Light.NoActionBar">
+		<!-- Disallow "Force dark theme" -->
+		<item name="android:forceDarkAllowed" tools:targetApi="Q" tools:ignore="ObsoleteSdkInt">false</item>
+		<item name="alertDialogTheme">@style/AppTheme.AlertDialogTheme</item>
+		<item name="cardCornerRadius">@dimen/corner_radius</item>
+
 		<item name="offline_icon">@drawable/main_offline_light</item>
 		<item name="media_button_backward">@drawable/media_backward_light</item>
 		<item name="media_button_forward">@drawable/media_forward_light</item>
@@ -72,7 +78,12 @@
 		<item name="cardBackgroundDrawable">@drawable/card_rounded_corners_light</item>
 		<item name="drawerHeaderBackground">@drawable/drawer_header_light</item>
 	</style>
-	<style name="Theme.DSub.Dark.Base" parent="@style/Theme.AppCompat">
+	<style name="Theme.DSub.Dark.Base" parent="@style/Theme.Material3.Dark.NoActionBar">
+		<!-- Disallow "Force dark theme" -->
+		<item name="android:forceDarkAllowed" tools:targetApi="Q" tools:ignore="ObsoleteSdkInt">false</item>
+		<item name="alertDialogTheme">@style/AppTheme.AlertDialogTheme</item>
+		<item name="cardCornerRadius">@dimen/corner_radius</item>
+
 		<item name="offline_icon">@drawable/main_offline_dark</item>
 		<item name="media_button_backward">@drawable/media_backward_dark</item>
 		<item name="media_button_forward">@drawable/media_forward_dark</item>
@@ -153,17 +164,6 @@
 	</style>
 	<style name="Theme.DSub.Black" parent="Theme.DSub.Black.Base">
 	</style>
-	<style name="Theme.DSub.Holo.Base" parent="Theme.DSub.Dark.Base">
-		<item name="android:windowBackground">@drawable/background</item>
-		<item name="colorPrimary">@color/holoPrimary</item>
-		<item name="colorPrimaryDark">@color/holoPrimaryDark</item>
-		<item name="colorAccent">@color/holoAccent</item>
-		<item name="actionbarBackgroundColor">@color/holoPrimary</item>
-		<item name="drawerHeaderBackground">@drawable/drawer_header_holo</item>
-		<item name="cardBackgroundDrawable">@drawable/card_rounded_corners_black</item>
-	</style>
-	<style name="Theme.DSub.Holo" parent="Theme.DSub.Holo.Base">
-	</style>
 
 	<style name="Theme.DSub.Light.No_Actionbar" parent="Theme.DSub.Light">
 		<item name="windowActionBar">false</item>
@@ -177,9 +177,10 @@
 		<item name="windowActionBar">false</item>
 		<item name="windowNoTitle">true</item>
 	</style>
-	<style name="Theme.DSub.Holo.No_Actionbar" parent="Theme.DSub.Holo">
-		<item name="windowActionBar">false</item>
-		<item name="windowNoTitle">true</item>
+
+	<style name="AppTheme.AlertDialogTheme" parent="@style/ThemeOverlay.Material3.MaterialAlertDialog">
+		<item name="dialogCornerRadius">28dp</item>
+		<item name="colorBackgroundFloating">?attr/colorSurface</item>
 	</style>
 
 	<style name="Theme.DSub.Light.No_Color.Base" parent="Theme.DSub.Light.No_Actionbar">
@@ -219,18 +220,12 @@
 		<item name="actionbarBackgroundColor">@android:color/transparent</item>
 		<item name="actionModeBackground">@color/background_material_dark</item>
 	</style>
-	<style name="Theme.DSub.Holo.No_Color.Base" parent="Theme.DSub.Holo.No_Actionbar">
-		<item name="actionbarBackgroundColor">@android:color/transparent</item>
-		<item name="actionModeBackground">@drawable/background</item>
-	</style>
 
 	<style name="Theme.DSub.Light.No_Color" parent="Theme.DSub.Light.No_Color.Base">
 	</style>
 	<style name="Theme.DSub.Black.No_Color" parent="Theme.DSub.Black.No_Color.Base">
 	</style>
 	<style name="Theme.DSub.Dark.No_Color" parent="Theme.DSub.Dark.No_Color.Base">
-	</style>
-	<style name="Theme.DSub.Holo.No_Color" parent="Theme.DSub.Holo.No_Color.Base">
 	</style>
 
 	<style name="DSub.DrawerArrow" parent="Widget.AppCompat.DrawerArrowToggle">
@@ -250,4 +245,6 @@
 	<style name="DarkCloseButton" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
 		<item name="colorControlNormal">@android:color/black</item>
 	</style>
+
+	<dimen name="corner_radius">12dp</dimen>
 </resources>

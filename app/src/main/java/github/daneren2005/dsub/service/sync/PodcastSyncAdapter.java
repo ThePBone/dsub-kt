@@ -77,7 +77,7 @@ public class PodcastSyncAdapter extends SubsonicSyncAdapter {
 
 					for(MusicDirectory.Entry entry: podcasts.getChildren()) {
 						// Make sure podcast is valid and not already synced
-						if(entry.getId() != null && "completed".equals(((PodcastEpisode)entry).getStatus()) && !existingEpisodes.contains(entry.getId())) {
+						if(entry.id != null && "completed".equals(((PodcastEpisode)entry).getStatus()) && !existingEpisodes.contains(entry.id)) {
 							DownloadFile file = new DownloadFile(context, entry, false);
 							while(!file.isCompleteFileAvailable() && !file.isFailedMax()) {
 								throwIfNetworkInvalid();
@@ -85,11 +85,11 @@ public class PodcastSyncAdapter extends SubsonicSyncAdapter {
 							}
 							// Only add if actualy downloaded correctly
 							if(file.isCompleteFileAvailable()) {
-								existingEpisodes.add(entry.getId());
-								if(!updated.contains(podcasts.getName())) {
-									updated.add(podcasts.getName());
+								existingEpisodes.add(entry.id);
+								if(!updated.contains(podcasts.name)) {
+									updated.add(podcasts.name);
 									if(updatedId == null) {
-										updatedId = podcasts.getId();
+										updatedId = podcasts.id;
 									}
 								}
 							}

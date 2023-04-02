@@ -55,8 +55,8 @@ public class PodcastEntryParser extends AbstractParser {
 				if ("channel".equals(name)) {
 					String id = get("id");
 					if(id.equals(channel)) {
-						episodes.setId(id);
-						episodes.setName(get("title"));
+						episodes.id = id;
+						episodes.name = get("title");
 						coverArt = get("coverArt");
 						valid = true;
 					} else {
@@ -67,15 +67,15 @@ public class PodcastEntryParser extends AbstractParser {
 				} else if ("episode".equals(name) && valid) {
 					PodcastEpisode episode = new PodcastEpisode();
 					episode.setEpisodeId(get("id"));
-					episode.setId(get("streamId"));
-					episode.setTitle(get("title"));
-					if(episodes.getId() != null) {
-						episode.setArtist(episodes.getName());
-						episode.setParent(episodes.getId());
+					episode.id = get("streamId");
+					episode.title = get("title");
+					if(episodes.id != null) {
+						episode.artist = episodes.name;
+						episode.parent = episodes.id;
 					} else {
-						episode.setParent(get("channelId"));
+						episode.parent = get("channelId");
 					}
-					episode.setAlbum(get("description"));
+					episode.album = get("description");
 					episode.setDate(get("publishDate"));
 					if(episode.getDate() == null) {
 						episode.setDate(get("created"));
@@ -85,31 +85,31 @@ public class PodcastEntryParser extends AbstractParser {
 					}
 					episode.setStatus(get("status"));
 					if(coverArt == null) {
-						episode.setCoverArt(get("coverArt"));
+						episode.coverArt = get("coverArt");
 					} else {
-						episode.setCoverArt(coverArt);
+						episode.coverArt = coverArt;
 					}
-					episode.setSize(getLong("size"));
-					episode.setContentType(get("contentType"));
-					episode.setSuffix(get("suffix"));
-					episode.setDuration(getInteger("duration"));
-					episode.setBitRate(getInteger("bitRate"));
+					episode.size = getLong("size");
+					episode.contentType = get("contentType");
+					episode.suffix = get("suffix");
+					episode.duration = getInteger("duration");
+					episode.bitRate = getInteger("bitRate");
 					episode.setVideo(getBoolean("isVideo"));
-					episode.setPath(get("path"));
-					if(episode.getPath() == null) {
-						episode.setPath(FileUtil.getPodcastPath(context, episode));
-					} else if(episode.getPath().indexOf("Podcasts/") == 0) {
-						episode.setPath(episode.getPath().substring("Podcasts/".length()));
+					episode.path = get("path");
+					if(episode.path == null) {
+						episode.path = FileUtil.getPodcastPath(context, episode);
+					} else if(episode.path.indexOf("Podcasts/") == 0) {
+						episode.path = episode.path.substring("Podcasts/".length());
 					}
 
 					Integer bookmark = getInteger("bookmarkPosition");
 					if(bookmark != null) {
-						episode.setBookmark(new Bookmark(bookmark));
+						episode.bookmark = new Bookmark(bookmark);
 					}
-					episode.setType(MusicDirectory.Entry.TYPE_PODCAST);
+					episode.type = MusicDirectory.Entry.TYPE_PODCAST;
 					
-					if(episode.getId() == null) {
-						episode.setId(String.valueOf(bogusId));
+					if(episode.id == null) {
+						episode.id = String.valueOf(bogusId);
 						bogusId--;
 					}
 					episodes.addChild(episode);

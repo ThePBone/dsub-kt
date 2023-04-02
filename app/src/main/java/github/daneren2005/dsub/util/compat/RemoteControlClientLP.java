@@ -159,7 +159,7 @@ public class RemoteControlClientLP extends RemoteControlClientBase {
 
 		if(entry != null) {
 			addCustomActions(entry, builder);
-			builder.setActiveQueueItemId(entry.getId().hashCode());
+			builder.setActiveQueueItemId(entry.id.hashCode());
 		}
 
 		PlaybackStateCompat playbackState = builder.build();
@@ -184,15 +184,15 @@ public class RemoteControlClientLP extends RemoteControlClientBase {
 
 	public void setMetadata(Entry currentSong, Bitmap bitmap) {
 		MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
-		builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, (currentSong == null) ? null : currentSong.getArtist())
-				.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, (currentSong == null) ? null : currentSong.getAlbum())
-				.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, (currentSong == null) ? null : currentSong.getArtist())
-				.putString(MediaMetadataCompat.METADATA_KEY_TITLE, (currentSong) == null ? null : currentSong.getTitle())
-				.putString(MediaMetadataCompat.METADATA_KEY_GENRE, (currentSong) == null ? null : currentSong.getGenre())
+		builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, (currentSong == null) ? null : currentSong.artist)
+				.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, (currentSong == null) ? null : currentSong.album)
+				.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, (currentSong == null) ? null : currentSong.artist)
+				.putString(MediaMetadataCompat.METADATA_KEY_TITLE, (currentSong) == null ? null : currentSong.title)
+				.putString(MediaMetadataCompat.METADATA_KEY_GENRE, (currentSong) == null ? null : currentSong.genre)
 				.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, (currentSong == null) ?
-						0 : ((currentSong.getTrack() == null) ? 0 : currentSong.getTrack()))
+						0 : ((currentSong.track == null) ? 0 : currentSong.track))
 				.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, (currentSong == null) ?
-						0 : ((currentSong.getDuration() == null) ? 0 : (currentSong.getDuration() * 1000)));
+						0 : ((currentSong.duration == null) ? 0 : (currentSong.duration * 1000)));
 
 		if(bitmap != null) {
 			builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap);
@@ -224,16 +224,16 @@ public class RemoteControlClientLP extends RemoteControlClientBase {
 			Entry entry = file.getSong();
 			Bundle extras = new Bundle();
 			extras.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
-					((entry.getDuration() == null) ? 0 : (entry.getDuration() * 1000)));
+					((entry.duration == null) ? 0 : (entry.duration * 1000)));
 
 			MediaDescriptionCompat description = new MediaDescriptionCompat.Builder()
-					.setMediaId(entry.getId())
-					.setTitle(entry.getTitle())
-					.setSubtitle(entry.getArtist())
-					.setDescription(entry.getAlbum())
+					.setMediaId(entry.id)
+					.setTitle(entry.title)
+					.setSubtitle(entry.artist)
+					.setDescription(entry.album)
 					.setExtras(extras)
 					.build();
-			MediaSessionCompat.QueueItem item = new MediaSessionCompat.QueueItem(description, entry.getId().hashCode());
+			MediaSessionCompat.QueueItem item = new MediaSessionCompat.QueueItem(description, entry.id.hashCode());
 			queue.add(item);
 		}
 
@@ -337,9 +337,9 @@ public class RemoteControlClientLP extends RemoteControlClientBase {
 			private void getSongsRecursively(Entry parent, List<Entry> songs) throws Exception {
 				MusicDirectory musicDirectory;
 				if(Util.isTagBrowsing(downloadService) && !Util.isOffline(downloadService)) {
-					musicDirectory = musicService.getAlbum(parent.getId(), parent.getTitle(), false, downloadService, this);
+					musicDirectory = musicService.getAlbum(parent.id, parent.title, false, downloadService, this);
 				} else {
-					musicDirectory = musicService.getMusicDirectory(parent.getId(), parent.getTitle(), false, downloadService, this);
+					musicDirectory = musicService.getMusicDirectory(parent.id, parent.title, false, downloadService, this);
 				}
 
 				for (Entry dir : musicDirectory.getChildren(true, false)) {
@@ -371,7 +371,7 @@ public class RemoteControlClientLP extends RemoteControlClientBase {
 		}.execute();
 	}
 	private void playMusicDirectory(Entry dir, boolean shuffle, boolean append, boolean playFromBookmark) {
-		playMusicDirectory(dir.getId(), shuffle, append, playFromBookmark);
+		playMusicDirectory(dir.id, shuffle, append, playFromBookmark);
 	}
 	private void playMusicDirectory(final String dirId, final boolean shuffle, final boolean append, final Entry startEntry) {
 		new SilentServiceTask<Void>(downloadService) {
@@ -443,8 +443,8 @@ public class RemoteControlClientLP extends RemoteControlClientBase {
 
 		int startIndex = entries.indexOf(startEntry);
 		int startPosition = 0;
-		if(startEntry.getBookmark() != null) {
-			Bookmark bookmark = startEntry.getBookmark();
+		if(startEntry.bookmark != null) {
+			Bookmark bookmark = startEntry.bookmark;
 			startPosition = bookmark.getPosition();
 		}
 		downloadService.download(entries, false, true, !append, shuffle, startIndex, startPosition);
@@ -459,8 +459,8 @@ public class RemoteControlClientLP extends RemoteControlClientBase {
 		if(resumeFromBookmark) {
 			int bookmarkIndex = 0;
 			for(Entry entry: entries) {
-				if(entry.getBookmark() != null) {
-					Bookmark bookmark = entry.getBookmark();
+				if(entry.bookmark != null) {
+					Bookmark bookmark = entry.bookmark;
 					startIndex = bookmarkIndex;
 					startPosition = bookmark.getPosition();
 					break;
@@ -512,7 +512,7 @@ public class RemoteControlClientLP extends RemoteControlClientBase {
 		public void onSkipToQueueItem(long queueId) {
 			if(currentQueue != null) {
 				for(DownloadFile file: currentQueue) {
-					if(file.getSong().getId().hashCode() == queueId) {
+					if(file.getSong().id.hashCode() == queueId) {
 						downloadService.play(file);
 						return;
 					}
@@ -615,9 +615,9 @@ public class RemoteControlClientLP extends RemoteControlClientBase {
 			String childId = extras.getString(Constants.INTENT_EXTRA_NAME_CHILD_ID, null);
 			if(childId != null) {
 				if(Util.isTagBrowsing(downloadService) && !Util.isOffline(downloadService)) {
-					playMusicDirectory(entry.getAlbumId(), shuffle, playLast, entry);
+					playMusicDirectory(entry.albumId, shuffle, playLast, entry);
 				} else {
-					playMusicDirectory(entry.getParent(), shuffle, playLast, entry);
+					playMusicDirectory(entry.parent, shuffle, playLast, entry);
 				}
 			}
 		}

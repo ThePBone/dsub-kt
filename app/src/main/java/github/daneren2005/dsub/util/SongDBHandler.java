@@ -80,7 +80,7 @@ public class SongDBHandler extends SQLiteOpenHelper {
 		addSong(db, Util.getMostRecentActiveServer(context), downloadFile);
 	}
 	protected synchronized void addSong(SQLiteDatabase db, int instance, DownloadFile downloadFile) {
-		addSong(db, instance, downloadFile.getSong().getId(), downloadFile.getSaveFile().getAbsolutePath());
+		addSong(db, instance, downloadFile.getSong().id, downloadFile.getSaveFile().getAbsolutePath());
 	}
 
 	protected synchronized void addSong(SQLiteDatabase db, String id, String absolutePath) {
@@ -103,7 +103,7 @@ public class SongDBHandler extends SQLiteOpenHelper {
 
 		List<Pair<String, String>> pairs = new ArrayList<>();
 		for(MusicDirectory.Entry entry: entries) {
-			pairs.add(new Pair<>(entry.getId(), FileUtil.getSongFile(context, entry).getAbsolutePath()));
+			pairs.add(new Pair<>(entry.id, FileUtil.getSongFile(context, entry).getAbsolutePath()));
 		}
 		addSongs(db, instance, pairs);
 
@@ -190,17 +190,17 @@ public class SongDBHandler extends SQLiteOpenHelper {
 	}
 
 	public synchronized Pair<Integer, String> getOnlineSongId(MusicDirectory.Entry entry) {
-		return getOnlineSongId(Util.getRestUrlHash(context), entry.getId(), FileUtil.getSongFile(context, entry).getAbsolutePath(), Util.isOffline(context) ? false : true);
+		return getOnlineSongId(Util.getRestUrlHash(context), entry.id, FileUtil.getSongFile(context, entry).getAbsolutePath(), Util.isOffline(context) ? false : true);
 	}
 	public synchronized Pair<Integer, String> getOnlineSongId(DownloadFile downloadFile) {
-		return getOnlineSongId(Util.getRestUrlHash(context), downloadFile.getSong().getId(), downloadFile.getSaveFile().getAbsolutePath(), Util.isOffline(context) ? false : true);
+		return getOnlineSongId(Util.getRestUrlHash(context), downloadFile.getSong().id, downloadFile.getSaveFile().getAbsolutePath(), Util.isOffline(context) ? false : true);
 	}
 
 	public synchronized Pair<Integer, String> getOnlineSongId(int serverKey, MusicDirectory.Entry entry) {
 		return getOnlineSongId(serverKey, new DownloadFile(context, entry, true));
 	}
 	public synchronized Pair<Integer, String> getOnlineSongId(int serverKey, DownloadFile downloadFile) {
-		return getOnlineSongId(serverKey, downloadFile.getSong().getId(), downloadFile.getSaveFile().getAbsolutePath(), true);
+		return getOnlineSongId(serverKey, downloadFile.getSong().id, downloadFile.getSaveFile().getAbsolutePath(), true);
 	}
 	public synchronized Pair<Integer, String> getOnlineSongId(int serverKey, String id, String savePath, boolean requireServerKey) {
 		SharedPreferences prefs = Util.getPreferences(context);

@@ -76,8 +76,8 @@ public class AlbumListCountView extends UpdateView2<Integer, Void> {
 			// Count how many new albums are in the list
 			count = 0;
 			for (MusicDirectory.Entry album : recentlyAdded.getChildren()) {
-				if (!recents.contains(album.getId())) {
-					recents.add(album.getId());
+				if (!recents.contains(album.id)) {
+					recents.add(album.id);
 					count++;
 				}
 			}

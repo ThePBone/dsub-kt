@@ -70,7 +70,7 @@ public class PlayQueueParser extends MusicDirectoryEntryParser {
 
 		if(currentId != null) {
 			for (MusicDirectory.Entry entry : state.songs) {
-				if (entry.getId().equals(currentId)) {
+				if (entry.id.equals(currentId)) {
 					state.currentPlayingIndex = state.songs.indexOf(entry);
 				}
 			}

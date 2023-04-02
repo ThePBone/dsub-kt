@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:myns="http://schemas.android.com/apk/res/github.daneren2005.dsub"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:title="@string/settings.appearance_title">
 
 	<PreferenceCategory
@@ -8,138 +8,139 @@
 
 		<ListPreference
 			android:title="@string/settings.theme_title"
-			android:key="theme"
-			android:defaultValue="light"
+			android:key="@string/key_theme"
+			android:defaultValue="@string/default_theme"
 			android:entryValues="@array/themeValues"
-			android:entries="@array/themeNames"/>
+			android:entries="@array/themeNames"
+			app:useSimpleSummaryProvider="true" />
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.theme_fullscreen"
 			android:summary="@string/settings.theme_fullscreen_summary"
-			android:key="fullScreen"
-			android:defaultValue="false"/>
+			android:key="@string/key_fullscreen"
+			android:defaultValue="@bool/default_fullscreen"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.color_action_bar"
 			android:summary="@string/settings.color_action_bar.summary"
-			android:key="colorActionBar"
-			android:defaultValue="true"/>
+			android:key="@string/key_color_actionbar"
+			android:defaultValue="@bool/default_color_actionbar"/>
 	</PreferenceCategory>
 
 	<PreferenceCategory
 		android:title="@string/settings.appearance_title">
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.track_title"
 			android:summary="@string/settings.track_summary"
-			android:key="displayTrack"
-			android:defaultValue="true"/>
+			android:key="@string/key_display_track"
+			android:defaultValue="@bool/default_display_track"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.file_suffix"
 			android:summary="@string/settings.file_suffix_summary"
-			android:key="displayFileSuffix"
-			android:defaultValue="true"/>
+			android:key="@string/key_display_file_suffix"
+			android:defaultValue="@bool/default_display_file_suffix"/>
 
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.hide_widget_title"
 			android:summary="@string/settings.hide_widget_summary"
-			android:key="hideWidget"
-			android:defaultValue="false"/>
+			android:key="@string/key_hide_widget"
+			android:defaultValue="@bool/default_hide_widget"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.custom_sort"
 			android:summary="@string/settings.custom_sort_summary"
-			android:key="customSortEnabled"
-			android:defaultValue="true"/>
+			android:key="@string/key_custom_sort_enabled"
+			android:defaultValue="@bool/default_custom_sort_enabled"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.rename_duplicates"
 			android:summary="@string/settings.rename_duplicates_summary"
-			android:key="renameDuplicates"
-			android:defaultValue="true"/>
+			android:key="@string/key_rename_duplicates"
+			android:defaultValue="@bool/default_rename_duplicates"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.disable_exit_prompt"
 			android:summary="@string/settings.disable_exit_prompt_summary"
-			android:key="disableExitPrompt"
-			android:defaultValue="false"/>
+			android:key="@string/key_disable_exit_prompt"
+			android:defaultValue="@bool/default_disable_exit_prompt"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.override_system_language"
 			android:summary="@string/settings.override_system_language_summary"
-			android:key="overrideSystemLanguage"
-			android:defaultValue="false"/>
+			android:key="@string/key_override_system_language"
+			android:defaultValue="@bool/default_override_system_language"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.large_album_art"
 			android:summary="@string/settings.large_album_art_summary"
-			android:key="largeAlbumArt"
-			android:defaultValue="true"/>
+			android:key="@string/key_large_album_art"
+			android:defaultValue="@bool/default_large_album_art"/>
 	</PreferenceCategory>
 
 	<PreferenceCategory
 		android:title="@string/settings.menu_options.title">
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/common.play_now"
 			android:summary="@string/settings.menu_options.play_now_summary"
-			android:key="showPlayNow"
-			android:defaultValue="true"/>
+			android:key="@string/key_show_play_now"
+			android:defaultValue="@bool/default_show_play_now"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/common.play_shuffled"
 			android:summary="@string/settings.menu_options.play_shuffled_summary"
-			android:key="showPlayShuffled"
-			android:defaultValue="true"/>
+			android:key="@string/key_show_play_shuffled"
+			android:defaultValue="@bool/default_show_play_shuffled"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/common.play_next"
 			android:summary="@string/settings.menu_options.play_next_summary"
-			android:key="showPlayNext"
-			android:defaultValue="false"/>
+			android:key="@string/key_show_play_next"
+			android:defaultValue="@bool/default_show_play_next"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/common.play_last"
 			android:summary="@string/settings.menu_options.play_last_summary"
-			android:key="showPlayLast"
-			android:defaultValue="true"/>
+			android:key="@string/key_show_play_last"
+			android:defaultValue="@bool/default_show_play_last"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/common.download"
 			android:summary="@string/settings.menu_options.download_summary"
-			android:key="showDownload"
-			android:defaultValue="false"/>
+			android:key="@string/key_show_download"
+			android:defaultValue="@bool/default_show_download"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/common.pin"
 			android:summary="@string/settings.menu_options.pin_summary"
-			android:key="showPin"
-			android:defaultValue="false"/>
+			android:key="@string/key_show_pin"
+			android:defaultValue="@bool/default_show_pin"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/common.delete"
 			android:summary="@string/settings.menu_options.delete_summary"
-			android:key="showDelete"
-			android:defaultValue="false"/>
+			android:key="@string/key_show_delete"
+			android:defaultValue="@bool/default_show_delete"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/common.star"
 			android:summary="@string/settings.menu_options.star_summary"
-			android:key="showStar"
-			android:defaultValue="true"/>
+			android:key="@string/key_show_star"
+			android:defaultValue="@bool/default_show_star"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/menu.share"
 			android:summary="@string/settings.menu_options.shared_summary"
-			android:key="showShared"
-			android:defaultValue="true"/>
+			android:key="@string/key_show_shared"
+			android:defaultValue="@bool/default_show_shared"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/menu.rate"
 			android:summary="@string/settings.menu_options.rate_summary"
-			android:key="showRating"
-			android:defaultValue="true"/>
+			android:key="@string/key_show_rating"
+			android:defaultValue="@bool/default_show_rating"/>
 	</PreferenceCategory>
 </PreferenceScreen>

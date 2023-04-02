@@ -4,25 +4,25 @@
 	<PreferenceCategory
 		android:title="@string/settings.casting">
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.casting_proxy"
 			android:summary="@string/settings.casting_proxy_summary"
 			android:key="castProxy"
 			android:defaultValue="false"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.gapless_playback"
 			android:summary="@string/settings.gapless_playback_summary"
 			android:key="castingGaplessPlayback"
 			android:defaultValue="true"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.casting_stream_original"
 			android:summary="@string/settings.casting_stream_original_summary"
 			android:key="castStreamOriginal"
 			android:defaultValue="true"/>
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:title="@string/settings.casting_cache"
 			android:summary="@string/settings.casting_cache_summary"
 			android:key="castCache"
@@ -32,7 +32,7 @@
 	<PreferenceCategory
 		android:title="@string/settings.other_title">
 
-		<CheckBoxPreference
+		<github.daneren2005.dsub.preferences.MaterialSwitchPreference
 			android:defaultValue="false"
 			android:key="dlnaCastingEnabled"
 			android:summary="@string/settings.casting.dlna_casting_enabled.summary"

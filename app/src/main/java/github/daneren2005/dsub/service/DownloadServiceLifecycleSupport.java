@@ -356,7 +356,7 @@ public class DownloadServiceLifecycleSupport {
 						for(MusicDirectory.Entry song: state.songs) {
 							Pair<Integer, String> onlineSongIds = dbHandler.getOnlineSongId(song);
 							if(onlineSongIds != null && onlineSongIds.getSecond() != null) {
-								song.setId(onlineSongIds.getSecond());
+								song.id = onlineSongIds.getSecond();
 								songs.add(song);
 							}
 						}

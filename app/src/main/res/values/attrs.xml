@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<declare-styleable name="MaterialSeekbarPreference">
+		<attr name="seekBarIncrement" />
+		<attr name="showSeekBarValue" />
+		<attr name="updateContinuously" format="boolean" />
+		<attr name="seekBarStyle" format="reference" />
+		<attr name="minValue" format="float" />
+		<attr name="maxValue" format="float" />
+		<attr name="unit" format="string" />
+		<attr name="precision" format="integer" />
+		<attr name="labelMinWidth" format="dimension" />
+	</declare-styleable>
+
     <attr name="offline_icon" format="reference"/>
     <attr name="media_button_backward" format="reference"/>
     <attr name="media_button_forward" format="reference"/>
@@ -64,11 +76,4 @@
 	<attr name="drawerSubtitleStyle" format="reference"/>
 	<attr name="cardBackgroundDrawable" format="reference"/>
 	<attr name="drawerHeaderBackground" format="reference"/>
-
-	<declare-styleable name="SeekBarPreference">
-		<attr name="min" format="integer"/>
-		<attr name="max" format="integer"/>
-		<attr name="stepSize" format="float"/>
-		<attr name="display" format="string"/>
-	</declare-styleable>
 </resources>

@@ -58,7 +58,7 @@ public class MainFragment extends SelectRecyclerFragment<Integer> {
 		pullToRefresh = false;
 		serialize = false;
 		backgroundUpdate = false;
-		alwaysFullscreen = true;
+		isAlwaysFullscreen = true;
 	}
 
 	@Override

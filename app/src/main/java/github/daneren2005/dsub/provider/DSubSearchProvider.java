@@ -99,7 +99,7 @@ public class DSubSearchProvider extends ContentProvider {
 				artist.setCloseness(Util.getStringDistance(query, artist.getName()));
 			} else {
 				MusicDirectory.Entry entry = (MusicDirectory.Entry) obj;
-				entry.setCloseness(Util.getStringDistance(query, entry.getTitle()));
+				entry.closeness = Util.getStringDistance(query, entry.title);
 			}
 		}
 		
@@ -114,12 +114,12 @@ public class DSubSearchProvider extends ContentProvider {
 				if (leftArtist) {
 					left = ((Artist) lhs).getCloseness();
 				} else {
-					left = ((MusicDirectory.Entry) lhs).getCloseness();
+					left = ((MusicDirectory.Entry) lhs).closeness;
 				}
 				if (rightArtist) {
 					right = ((Artist) rhs).getCloseness();
 				} else {
-					right = ((MusicDirectory.Entry) rhs).getCloseness();
+					right = ((MusicDirectory.Entry) rhs).closeness;
 				}
 
 				if (left == right) {
@@ -151,30 +151,30 @@ public class DSubSearchProvider extends ContentProvider {
 				
 				if(entry.isDirectory()) {
 					String icon = RESOURCE_PREFIX + R.drawable.ic_action_album;
-					cursor.addRow(new Object[]{entry.getId().hashCode(), entry.getTitle(), entry.getArtist(), entry.getId(), entry.getTitle(), icon});
+					cursor.addRow(new Object[]{entry.id.hashCode(), entry.title, entry.artist, entry.id, entry.title, icon});
 				} else {
 					String icon = RESOURCE_PREFIX + R.drawable.ic_action_song;
 					String id;
 					if(Util.isTagBrowsing(getContext())) {
-						id = entry.getAlbumId();
+						id = entry.albumId;
 					} else {
-						id = entry.getParent();
+						id = entry.parent;
 					}
 
 					String artistDisplay;
-					if(entry.getArtist() == null) {
-						if(entry.getAlbum() != null) {
+					if(entry.artist == null) {
+						if(entry.album != null) {
 							artistDisplay = entry.getAlbumDisplay();
 						} else {
 							artistDisplay = "";
 						}
-					} else if(entry.getAlbum() != null) {
-						artistDisplay = entry.getArtist() + " - " + entry.getAlbumDisplay();
+					} else if(entry.album != null) {
+						artistDisplay = entry.artist + " - " + entry.getAlbumDisplay();
 					} else {
-						artistDisplay = entry.getArtist();
+						artistDisplay = entry.artist;
 					}
 
-					cursor.addRow(new Object[]{entry.getId().hashCode(), entry.getTitle(), artistDisplay, "dsub-so-" + id, entry.getTitle(), icon});
+					cursor.addRow(new Object[]{entry.id.hashCode(), entry.title, artistDisplay, "dsub-so-" + id, entry.title, icon});
 				}
 			}
 		}

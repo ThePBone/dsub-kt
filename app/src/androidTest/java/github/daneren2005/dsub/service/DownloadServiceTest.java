@@ -275,27 +275,26 @@ public class DownloadServiceTest extends
 	 */
 	private List<MusicDirectory.Entry> createMusicSongs(int size) {
 		MusicDirectory.Entry musicEntry = new MusicDirectory.Entry();
-		musicEntry.setAlbum("Itchy Hitchhiker");
-		musicEntry.setBitRate(198);
-		musicEntry.setAlbumId("49");
-		musicEntry.setDuration(247);
-		musicEntry.setSize(Long.valueOf(6162717));
-		musicEntry.setArtistId("23");
-		musicEntry.setArtist("The Dada Weatherman");
-		musicEntry.setCloseness(0);
-		musicEntry.setContentType("audio/mpeg");
-		musicEntry.setCoverArt("433");
+		musicEntry.album = "Itchy Hitchhiker";
+		musicEntry.bitRate = 198;
+		musicEntry.albumId = "49";
+		musicEntry.duration = 247;
+		musicEntry.size = Long.valueOf(6162717);
+		musicEntry.artistId = "23";
+		musicEntry.artist = "The Dada Weatherman";
+		musicEntry.closeness = 0;
+		musicEntry.contentType = "audio/mpeg";
+		musicEntry.coverArt = "433";
 		musicEntry.setDirectory(false);
-		musicEntry.setGenre("Easy Listening/New Age");
-		musicEntry.setGrandParent("306");
-		musicEntry.setId("466");
-		musicEntry.setParent("433");
-		musicEntry
-				.setPath("The Dada Weatherman/Itchy Hitchhiker/08 - The Dada Weatherman - Harmonies.mp3");
+		musicEntry.genre = "Easy Listening/New Age";
+		musicEntry.grandParent = "306";
+		musicEntry.id = "466";
+		musicEntry.parent = "433";
+		musicEntry.path = "The Dada Weatherman/Itchy Hitchhiker/08 - The Dada Weatherman - Harmonies.mp3";
 		musicEntry.setStarred(true);
-		musicEntry.setSuffix("mp3");
-		musicEntry.setTitle("Harmonies");
-		musicEntry.setType(0);
+		musicEntry.suffix = "mp3";
+		musicEntry.title = "Harmonies";
+		musicEntry.type = 0;
 		musicEntry.setVideo(false);
 
 		List<MusicDirectory.Entry> musicEntries = new LinkedList<MusicDirectory.Entry>();

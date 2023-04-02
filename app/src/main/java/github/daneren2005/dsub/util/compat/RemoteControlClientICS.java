@@ -118,15 +118,15 @@ public class RemoteControlClientICS extends RemoteControlClientBase {
 	}
 
 	protected void updateMetadata(final MusicDirectory.Entry currentSong, final RemoteControlClient.MetadataEditor editor) {
-		editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, (currentSong == null) ? null : currentSong.getArtist())
-			.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, (currentSong == null) ? null : currentSong.getAlbum())
-			.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, (currentSong == null) ? null : currentSong.getArtist())
-			.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, (currentSong) == null ? null : currentSong.getTitle())
-			.putString(MediaMetadataRetriever.METADATA_KEY_GENRE, (currentSong) == null ? null : currentSong.getGenre())
+		editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, (currentSong == null) ? null : currentSong.artist)
+			.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, (currentSong == null) ? null : currentSong.album)
+			.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, (currentSong == null) ? null : currentSong.artist)
+			.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, (currentSong) == null ? null : currentSong.title)
+			.putString(MediaMetadataRetriever.METADATA_KEY_GENRE, (currentSong) == null ? null : currentSong.genre)
 			.putLong(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER, (currentSong == null) ? 
-				0 : ((currentSong.getTrack() == null) ? 0 : currentSong.getTrack()))
+				0 : ((currentSong.track == null) ? 0 : currentSong.track))
 			.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, (currentSong == null) ? 
-				0 : ((currentSong.getDuration() == null) ? 0 : (currentSong.getDuration() * 1000)));
+				0 : ((currentSong.duration == null) ? 0 : (currentSong.duration * 1000)));
 	}
 	
 	protected int getTransportFlags() {

@@ -131,15 +131,15 @@ public abstract class RemoteController {
 		// In offline mode or playing offline song
 		if(downloadFile.isStream()) {
 			url = downloadFile.getStream();
-		} else if(Util.isOffline(downloadService) || song.getId().indexOf(rootLocation) != -1) {
+		} else if(Util.isOffline(downloadService) || song.id.indexOf(rootLocation) != -1) {
 			if(proxy == null) {
 				proxy = new FileProxy(downloadService);
 				proxy.start();
 			}
 
 			// Offline song
-			if(song.getId().indexOf(rootLocation) != -1) {
-				url = proxy.getPublicAddress(song.getId());
+			if(song.id.indexOf(rootLocation) != -1) {
+				url = proxy.getPublicAddress(song.id);
 			} else {
 				// Playing online song in offline mode
 				url = proxy.getPublicAddress(downloadFile.getCompleteFile().getPath());
@@ -162,7 +162,7 @@ public abstract class RemoteController {
 			}
 
 			if(song.isVideo()) {
-				url = musicService.getHlsUrl(song.getId(), downloadFile.getBitRate(), downloadService);
+				url = musicService.getHlsUrl(song.id, downloadFile.getBitRate(), downloadService);
 			} else {
 				url = musicService.getMusicUrl(downloadService, song, downloadFile.getBitRate());
 			}

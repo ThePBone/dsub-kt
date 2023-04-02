@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="key_theme" translatable="false">theme</string>
+    <string name="key_fullscreen" translatable="false">fullscreen</string>
+    <string name="key_color_actionbar" translatable="false">color_actionbar</string>
+    <string name="key_display_track" translatable="false">display_track</string>
+    <string name="key_display_file_suffix" translatable="false">display_file_suffix</string>
+    <string name="key_hide_widget" translatable="false">hide_widget</string>
+    <string name="key_custom_sort_enabled" translatable="false">custom_sort_enabled</string>
+    <string name="key_rename_duplicates" translatable="false">rename_duplicates</string>
+    <string name="key_disable_exit_prompt" translatable="false">disable_exit_prompt</string>
+    <string name="key_override_system_language" translatable="false">override_system_language</string>
+    <string name="key_large_album_art" translatable="false">large_album_art</string>
+    <string name="key_show_play_now" translatable="false">show_play_now</string>
+    <string name="key_show_play_shuffled" translatable="false">show_play_shuffled</string>
+    <string name="key_show_play_last" translatable="false">show_play_last</string>
+    <string name="key_show_download" translatable="false">show_download</string>
+    <string name="key_show_play_next" translatable="false">show_play_next</string>
+    <string name="key_show_pin" translatable="false">show_pin</string>
+    <string name="key_show_delete" translatable="false">show_Delete</string>
+    <string name="key_show_star" translatable="false">show_star</string>
+    <string name="key_show_shared" translatable="false">show_shared</string>
+    <string name="key_show_rating" translatable="false">show_rating</string>
+</resources>

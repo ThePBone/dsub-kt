@@ -226,7 +226,7 @@ public abstract class UpdateView<T> extends LinearLayout {
 				check = ((AlbumView) view).getEntry();
 			}
 
-			if(check != null && entry != check && check.getId().equals(entry.getId())) {
+			if(check != null && entry != check && check.id.equals(entry.id)) {
 				return check;
 			}
 		}

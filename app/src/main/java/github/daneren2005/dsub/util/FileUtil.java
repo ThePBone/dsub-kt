@@ -116,7 +116,7 @@ public class FileUtil {
         File dir = getAlbumDirectory(context, song);
 
         StringBuilder fileName = new StringBuilder();
-        Integer track = song.getTrack();
+        Integer track = song.track;
         if (track != null) {
             if (track < 10) {
                 fileName.append("0");
@@ -124,7 +124,7 @@ public class FileUtil {
             fileName.append(track).append("-");
         }
 
-        fileName.append(fileSystemSafe(song.getTitle()));
+        fileName.append(fileSystemSafe(song.title));
 		if(fileName.length() >= MAX_FILENAME_LENGTH) {
 			fileName.setLength(MAX_FILENAME_LENGTH);
 		}
@@ -137,13 +137,13 @@ public class FileUtil {
 				fileName.append("mp4");
 			} else if("raw".equals(videoPlayerType)) {
 				// Download the original video without any transcoding
-				fileName.append(song.getSuffix());
+				fileName.append(song.suffix);
 			}
 		} else {
-			if (song.getTranscodedSuffix() != null) {
-				fileName.append(song.getTranscodedSuffix());
+			if (song.transcodedSuffix != null) {
+				fileName.append(song.transcodedSuffix);
 			} else {
-				fileName.append(song.getSuffix());
+				fileName.append(song.suffix);
 			}
 		}
 
@@ -169,7 +169,7 @@ public class FileUtil {
 				fw.write(filePath + "\n");
 			}
 		} catch(Exception e) {
-			Log.w(TAG, "Failed to save playlist: " + playlist.getName());
+			Log.w(TAG, "Failed to save playlist: " + playlist.name);
 		} finally {
 			bw.close();
 			fw.close();
@@ -188,17 +188,17 @@ public class FileUtil {
 
 	public static File getAlbumArtFile(Context context, PodcastChannel channel) {
 		MusicDirectory.Entry entry = new MusicDirectory.Entry();
-		entry.setId(channel.getId());
-		entry.setTitle(channel.getName());
+		entry.id = channel.getId();
+		entry.title = channel.getName();
 		return getAlbumArtFile(context, entry);
 	}
     public static File getAlbumArtFile(Context context, MusicDirectory.Entry entry) {
-		if(entry.getId().indexOf(ImageLoader.PLAYLIST_PREFIX) != -1) {
+		if(entry.id.indexOf(ImageLoader.PLAYLIST_PREFIX) != -1) {
 			File dir = getAlbumArtDirectory(context);
-			return  new File(dir, Util.md5Hex(ImageLoader.PLAYLIST_PREFIX + entry.getTitle()) + ".jpeg");
-		} else if(entry.getId().indexOf(ImageLoader.PODCAST_PREFIX) != -1) {
+			return  new File(dir, Util.md5Hex(ImageLoader.PLAYLIST_PREFIX + entry.title) + ".jpeg");
+		} else if(entry.id.indexOf(ImageLoader.PODCAST_PREFIX) != -1) {
 			File dir = getAlbumArtDirectory(context);
-			return  new File(dir, Util.md5Hex(ImageLoader.PODCAST_PREFIX + entry.getTitle()) + ".jpeg");
+			return  new File(dir, Util.md5Hex(ImageLoader.PODCAST_PREFIX + entry.title) + ".jpeg");
 		} else {
 			File albumDir = getAlbumDirectory(context, entry);
 			File artFile;
@@ -335,14 +335,14 @@ public class FileUtil {
 		return dir;
 	}
 	public static File getArtistDirectory(Context context, MusicDirectory.Entry artist) {
-		File dir = new File(getMusicDirectory(context).getPath() + "/" + fileSystemSafe(artist.getTitle()));
+		File dir = new File(getMusicDirectory(context).getPath() + "/" + fileSystemSafe(artist.title));
 		return dir;
 	}
 
     public static File getAlbumDirectory(Context context, MusicDirectory.Entry entry) {
         File dir = null;
-        if (entry.getPath() != null) {
-            File f = new File(fileSystemSafeDir(entry.getPath()));
+        if (entry.path != null) {
+            File f = new File(fileSystemSafeDir(entry.path));
 			String folder = getMusicDirectory(context).getPath();
 			if(entry.isDirectory()) {
 				folder += "/" + f.getPath();
@@ -361,10 +361,10 @@ public class FileUtil {
 			}
 
 			if(dir == null) {
-				String artist = fileSystemSafe(entry.getArtist());
-				String album = fileSystemSafe(entry.getAlbum());
+				String artist = fileSystemSafe(entry.artist);
+				String album = fileSystemSafe(entry.album);
 				if("unnamed".equals(album)) {
-					album = fileSystemSafe(entry.getTitle());
+					album = fileSystemSafe(entry.title);
 				}
 				dir = new File(getMusicDirectory(context).getPath() + "/" + artist + "/" + album);
 			}
@@ -385,13 +385,13 @@ public class FileUtil {
 		}
 		
 		// Check if this lookup has already been done before
-		MusicDirectory.Entry child = entryLookup.get(entry.getId());
+		MusicDirectory.Entry child = entryLookup.get(entry.id);
 		if(child != null) {
 			return child;
 		}
 		
 		// Do a special lookup since 4.7+ doesn't match artist/album to entry.getPath
-		String s = Util.getRestUrl(context, null, false) + entry.getId();
+		String s = Util.getRestUrl(context, null, false) + entry.id;
 		String cacheName = (Util.isTagBrowsing(context) ? "album-" : "directory-") + s.hashCode() + ".ser";
 		MusicDirectory entryDir = FileUtil.deserialize(context, cacheName, MusicDirectory.class);
 
@@ -399,7 +399,7 @@ public class FileUtil {
 			List<MusicDirectory.Entry> songs = entryDir.getChildren(allowDir, true);
 			if(songs.size() > 0) {
 				child = songs.get(0);
-				entryLookup.put(entry.getId(), child);
+				entryLookup.put(entry.id, child);
 				serialize(context, entryLookup, lookupName);
 				return child;
 			}
@@ -409,7 +409,7 @@ public class FileUtil {
 	}
 	
 	public static String getPodcastPath(Context context, PodcastEpisode episode) {
-		return fileSystemSafe(episode.getArtist()) + "/" + fileSystemSafe(episode.getTitle());
+		return fileSystemSafe(episode.artist) + "/" + fileSystemSafe(episode.title);
 	}
 	public static File getPodcastFile(Context context, String server) {
 		File dir = getPodcastDirectory(context);

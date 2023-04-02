@@ -57,7 +57,7 @@ public class SearchFragment extends SubsonicFragment implements SectionAdapter.O
 
 	public SearchFragment() {
 		super();
-		alwaysStartFullscreen = true;
+		isAlwaysStartFullscreen = true;
 	}
 
 	@Override
@@ -237,8 +237,8 @@ public class SearchFragment extends SubsonicFragment implements SectionAdapter.O
 	private void onAlbumSelected(Entry album, boolean autoplay) {
 		SubsonicFragment fragment = new SelectDirectoryFragment();
 		Bundle args = new Bundle();
-		args.putString(Constants.INTENT_EXTRA_NAME_ID, album.getId());
-		args.putString(Constants.INTENT_EXTRA_NAME_NAME, album.getTitle());
+		args.putString(Constants.INTENT_EXTRA_NAME_ID, album.id);
+		args.putString(Constants.INTENT_EXTRA_NAME_NAME, album.title);
 		if(autoplay) {
 			args.putBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
 		}
@@ -266,7 +266,7 @@ public class SearchFragment extends SubsonicFragment implements SectionAdapter.O
 		int maxBitrate = Util.getMaxVideoBitrate(context);
 
 		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.setData(Uri.parse(MusicServiceFactory.getMusicService(context).getVideoUrl(maxBitrate, context, entry.getId())));
+		intent.setData(Uri.parse(MusicServiceFactory.getMusicService(context).getVideoUrl(maxBitrate, context, entry.id)));
 		startActivity(intent);
 	}
 
@@ -278,7 +278,7 @@ public class SearchFragment extends SubsonicFragment implements SectionAdapter.O
 
 			TreeMap<Integer, Entry> tree = new TreeMap<>();
 			for(Entry song: searchResult.getSongs()) {
-				tree.put(Util.getStringDistance(song.getTitle().toLowerCase(), titleQuery), song);
+				tree.put(Util.getStringDistance(song.title.toLowerCase(), titleQuery), song);
 			}
 
 			Map.Entry<Integer, Entry> entry = tree.firstEntry();
@@ -292,7 +292,7 @@ public class SearchFragment extends SubsonicFragment implements SectionAdapter.O
 
 			TreeMap<Integer, Entry> tree = new TreeMap<>();
 			for(Entry album: searchResult.getAlbums()) {
-				tree.put(Util.getStringDistance(album.getTitle().toLowerCase(), albumQuery), album);
+				tree.put(Util.getStringDistance(album.title.toLowerCase(), albumQuery), album);
 			}
 
 			Map.Entry<Integer, Entry> entry = tree.firstEntry();
@@ -330,20 +330,20 @@ public class SearchFragment extends SubsonicFragment implements SectionAdapter.O
 		Entry album = null;
 		if(!searchResult.getAlbums().isEmpty()) {
 			album = searchResult.getAlbums().get(0);
-			album.setCloseness(Util.getStringDistance(album.getTitle().toLowerCase(), query));
+			album.closeness = Util.getStringDistance(album.title.toLowerCase(), query);
 		}
 		Entry song = null;
 		if(!searchResult.getSongs().isEmpty()) {
 			song = searchResult.getSongs().get(0);
-			song.setCloseness(Util.getStringDistance(song.getTitle().toLowerCase(), query));
+			song.closeness = Util.getStringDistance(song.title.toLowerCase(), query);
 		}
 
 		if(artist != null && (artist.getCloseness() <= MIN_CLOSENESS ||
-				(album == null || artist.getCloseness() <= album.getCloseness()) &&
-						(song == null || artist.getCloseness() <= song.getCloseness()))) {
+				(album == null || artist.getCloseness() <= album.closeness) &&
+						(song == null || artist.getCloseness() <= song.closeness))) {
 			onArtistSelected(artist, true);
-		} else if(album != null && (album.getCloseness() <= MIN_CLOSENESS ||
-				song == null || album.getCloseness() <= song.getCloseness())) {
+		} else if(album != null && (album.closeness <= MIN_CLOSENESS ||
+				song == null || album.closeness <= song.closeness)) {
 			onAlbumSelected(album, true);
 		} else if(song != null) {
 			onSongSelected(song, false, false, true, false);

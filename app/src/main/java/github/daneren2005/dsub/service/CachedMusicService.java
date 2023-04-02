@@ -345,7 +345,7 @@ public class CachedMusicService implements MusicService {
 			updateAllSongs(context, dir);
 			FileUtil.serialize(context, dir, getCacheName(context, "playlist", id));
 
-			File playlistFile = FileUtil.getPlaylistFile(context, Util.getServerName(context, musicService.getInstance(context)), dir.getName());
+			File playlistFile = FileUtil.getPlaylistFile(context, Util.getServerName(context, musicService.getInstance(context)), dir.name);
 			if(cachedPlaylist == null || !playlistFile.exists() || !cachedPlaylist.getChildren().equals(dir.getChildren())) {
 				FileUtil.writePlaylistFile(context, playlistFile, dir);
 			}
@@ -541,16 +541,16 @@ public class CachedMusicService implements MusicService {
 				final int instance = musicService.getInstance(context);
 				isTagBrowsing = Util.isTagBrowsing(context, instance);
 				for (final Entry album : dir.getChildren()) {
-					if (!recents.contains(album.getId())) {
-						recents.add(album.getId());
+					if (!recents.contains(album.id)) {
+						recents.add(album.id);
 
 						String cacheName, parent;
 						if (isTagBrowsing) {
 							cacheName = "artist";
-							parent = album.getArtistId();
+							parent = album.artistId;
 						} else {
 							cacheName = "directory";
-							parent = album.getParent();
+							parent = album.parent;
 						}
 
 						// Add album to artist
@@ -584,8 +584,8 @@ public class CachedMusicService implements MusicService {
 						} else {
 							// If parent is null, then this is a root level album
 							final Artist artist = new Artist();
-							artist.setId(album.getId());
-							artist.setName(album.getTitle());
+							artist.setId(album.id);
+							artist.setName(album.title);
 
 							new IndexesUpdater(context, isTagBrowsing ? "artists" : "indexes") {
 								private boolean changed = false;
@@ -1005,7 +1005,7 @@ public class CachedMusicService implements MusicService {
 		new GenericEntryUpdater(context, entry) {
 			@Override
 			public boolean checkResult(Entry entry, Entry check) {
-				if (entry.getId().equals(check.getId())) {
+				if (entry.id.equals(check.id)) {
 					check.setRating(entry.getRating());
 					return true;
 				}
@@ -1036,14 +1036,14 @@ public class CachedMusicService implements MusicService {
 				int position = newList.indexOf(oldEntry);
 				if(position != -1) {
 					Entry newEntry = newList.get(position);
-					if(newEntry.getBookmark().getPosition() == oldEntry.getBookmark().getPosition()) {
+					if(newEntry.bookmark.getPosition() == oldEntry.bookmark.getPosition()) {
 						newList.remove(position);
 					}
 
 					// Remove from old regardless of whether position is wrong
 					it.remove();
 				} else {
-					oldEntry.setBookmark(null);
+					oldEntry.bookmark = null;
 				}
 			}
 
@@ -1447,7 +1447,7 @@ public class CachedMusicService implements MusicService {
 		}
 		
 		public boolean checkResult(Entry entry, Entry check) {
-			return entry.getId().equals(check.getId());
+			return entry.id.equals(check.id);
 		}
 		public abstract void updateResult(Entry result);
 		
@@ -1464,14 +1464,14 @@ public class CachedMusicService implements MusicService {
 					if(entry.isDirectory()) {
 						if(entry.isAlbum()) {
 							cacheName = "artist";
-							parent = entry.getArtistId();
+							parent = entry.artistId;
 						} else {
 							cacheName = "artists";
 							parent = null;
 						}
 					} else {
 						cacheName = "album";
-						parent = entry.getAlbumId();
+						parent = entry.albumId;
 					}
 				} else {
 					if(entry.isDirectory() && !entry.isAlbum()) {
@@ -1479,7 +1479,7 @@ public class CachedMusicService implements MusicService {
 						parent = null;
 					} else {
 						cacheName = "directory";
-						parent = entry.getParent();
+						parent = entry.parent;
 					}
 				}
 
@@ -1511,7 +1511,7 @@ public class CachedMusicService implements MusicService {
 				}
 				
 				if(entry instanceof PodcastEpisode) {
-					new MusicDirectoryUpdater(context, cacheName, "p-" + entry.getParent()) {
+					new MusicDirectoryUpdater(context, cacheName, "p-" + entry.parent) {
 						@Override
 						public boolean checkResult(Entry check) {
 							return GenericEntryUpdater.this.checkResult(entry, check);
@@ -1559,24 +1559,24 @@ public class CachedMusicService implements MusicService {
 
 		@Override
 		public boolean checkResult(Entry entry, Entry check) {
-			if(entry.getId().equals(check.getId())) {
+			if(entry.id.equals(check.id)) {
 				int position;
-				if(entry.getBookmark() == null) {
+				if(entry.bookmark == null) {
 					position = -1;
 				} else {
-					position = entry.getBookmark().getPosition();
+					position = entry.bookmark.getPosition();
 				}
 
-				if(position == -1 && check.getBookmark() != null) {
-					check.setBookmark(null);
+				if(position == -1 && check.bookmark != null) {
+					check.bookmark = null;
 					return true;
-				} else if(position  >= 0 && (check.getBookmark() == null || check.getBookmark().getPosition() != position)) {
-					Bookmark bookmark = check.getBookmark();
+				} else if(position  >= 0 && (check.bookmark == null || check.bookmark.getPosition() != position)) {
+					Bookmark bookmark = check.bookmark;
 
 					// Create one if empty
 					if(bookmark == null) {
 						bookmark = new Bookmark();
-						check.setBookmark(bookmark);
+						check.bookmark = bookmark;
 					}
 
 					// Update bookmark position no matter what
@@ -1600,7 +1600,7 @@ public class CachedMusicService implements MusicService {
 
 		@Override
 		public boolean checkResult(Entry entry, Entry check) {
-			if (entry.getId().equals(check.getId())) {
+			if (entry.id.equals(check.id)) {
 				if(entry.isStarred() != check.isStarred()) {
 					check.setStarred(entry.isStarred());
 					return true;
